@@ -13,7 +13,10 @@ export const CHART_TYPES = {
 
 export const STAGES = {
   QUALIFIED: 'ACQ - Qualified',
+  NEEDS_OFFER: 'ACQ - Needs Offer',
   OFFERS_MADE: 'ACQ - Offers Made',
+  OFFER_NOT_ACCEPTED: 'ACQ - Offer Not Accepted',
+  CONTRACT_SENT: 'ACQ - Contract Sent',
   PRICE_MOTIVATED: 'ACQ - Price Motivated'
 };
 

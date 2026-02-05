@@ -63,6 +63,226 @@ export const getBusinessDays = (startDate, endDate) => {
   return businessDays;
 };
 
+/**
+ * Standardized "Offers Made" counting logic
+ *
+ * Counts offers with these rules:
+ * 1. Direct offers: Transition TO "ACQ - Offers Made"
+ * 2. Implicit offers: Transition TO "ACQ - Offer Not Accepted" FROM a pre-offer stage
+ * 3. Implicit offers: Transition TO "ACQ - Contract Sent" FROM a pre-offer stage
+ *
+ * Pre-offer stages are stages where an offer hasn't been made yet:
+ * - ACQ - Qualified, ACQ - Needs Offer, Qualified Phase 2/3, etc.
+ *
+ * Post-offer stages (where an offer was already made) do NOT trigger implicit offers:
+ * - ACQ - Offers Made, ACQ - Contract Sent, ACQ - Under Contract, etc.
+ *
+ * 24-hour deduplication: One lead can only count as 1 offer per 24-hour window
+ * Multiple offers for the same lead are valid if 24+ hours apart
+ *
+ * @param {Array} stageChanges - Array of stage change records
+ * @param {Date} startDate - Start of date range to count (optional, counts all if not provided)
+ * @param {Date} endDate - End of date range to count (optional, counts all if not provided)
+ * @returns {Object} { count: number, offerEvents: Array }
+ */
+export const countOfferEvents = (stageChanges, startDate = null, endDate = null) => {
+  // Stage constants
+  const OFFERS_MADE_STAGE = 'ACQ - Offers Made';
+  const OFFER_NOT_ACCEPTED_STAGE = 'ACQ - Offer Not Accepted';
+  const CONTRACT_SENT_STAGE = 'ACQ - Contract Sent';
+
+  // Pre-offer stages (stages where an offer hasn't been made yet)
+  // Implicit offers only count when coming FROM these stages
+  const PRE_OFFER_STAGES = [
+    'ACQ - Qualified',
+    'ACQ - Needs Offer',
+    'Qualified Phase 2 - Day 3 to 2 Weeks',
+    'Qualified Phase 3 - 2 Weeks to 4 Weeks',
+    'ACQ - Listed on Market',
+    'ACQ - Went Cold - Drip Campaign',
+    'ACQ - Price Motivated',
+    'ACQ - Not Ready to Sell',
+    'ACQ - New Lead',
+    'ACQ - Contacted',
+    'ACQ - Attempted Contact'
+  ];
+
+  // Filter to date range if provided
+  let filteredChanges = stageChanges;
+  if (startDate && endDate) {
+    filteredChanges = stageChanges.filter(change => {
+      const changeDate = new Date(change.changed_at);
+      return changeDate >= startDate && changeDate <= endDate;
+    });
+  }
+
+  // Identify all offer events
+  const offerEvents = [];
+
+  filteredChanges.forEach(change => {
+    const stageTo = change.stage_to;
+    const stageFrom = change.stage_from;
+
+    let isOfferEvent = false;
+    let offerType = null;
+
+    // Rule 1: Direct offer - transition TO "ACQ - Offers Made"
+    if (stageTo === OFFERS_MADE_STAGE) {
+      isOfferEvent = true;
+      offerType = 'direct';
+    }
+    // Rule 2: Implicit offer - TO "Offer Not Accepted" FROM a pre-offer stage
+    // (means they skipped "Offers Made" and went straight to rejection)
+    else if (stageTo === OFFER_NOT_ACCEPTED_STAGE && PRE_OFFER_STAGES.includes(stageFrom)) {
+      isOfferEvent = true;
+      offerType = 'implicit_not_accepted';
+    }
+    // Rule 3: Implicit offer - TO "Contract Sent" FROM a pre-offer stage
+    // (means they skipped "Offers Made" and went straight to contract)
+    else if (stageTo === CONTRACT_SENT_STAGE && PRE_OFFER_STAGES.includes(stageFrom)) {
+      isOfferEvent = true;
+      offerType = 'implicit_contract_sent';
+    }
+
+    if (isOfferEvent) {
+      offerEvents.push({
+        person_id: change.person_id,
+        first_name: change.first_name,
+        last_name: change.last_name,
+        stage_from: stageFrom,
+        stage_to: stageTo,
+        changed_at: change.changed_at,
+        offer_type: offerType
+      });
+    }
+  });
+
+  // Sort by person_id, then by timestamp for deduplication
+  offerEvents.sort((a, b) => {
+    if (a.person_id !== b.person_id) {
+      return a.person_id.localeCompare(b.person_id);
+    }
+    return new Date(a.changed_at) - new Date(b.changed_at);
+  });
+
+  // Apply 24-hour deduplication per lead
+  const dedupedOfferEvents = [];
+  const lastOfferTimeByLead = {};
+
+  offerEvents.forEach(event => {
+    const personId = event.person_id;
+    const eventTime = new Date(event.changed_at);
+
+    if (!lastOfferTimeByLead[personId]) {
+      // First offer for this lead
+      dedupedOfferEvents.push(event);
+      lastOfferTimeByLead[personId] = eventTime;
+    } else {
+      // Check if 24+ hours since last offer for this lead
+      const lastOfferTime = lastOfferTimeByLead[personId];
+      const hoursDiff = (eventTime - lastOfferTime) / (1000 * 60 * 60);
+
+      if (hoursDiff >= 24) {
+        // Valid new offer (24+ hours apart)
+        dedupedOfferEvents.push(event);
+        lastOfferTimeByLead[personId] = eventTime;
+      }
+      // else: Skip - within 24 hours of previous offer
+    }
+  });
+
+  // Log for debugging
+  console.log(`📊 OFFER COUNTING: ${offerEvents.length} raw events → ${dedupedOfferEvents.length} after 24hr dedup`);
+  if (dedupedOfferEvents.length > 0) {
+    const directCount = dedupedOfferEvents.filter(e => e.offer_type === 'direct').length;
+    const implicitNotAccepted = dedupedOfferEvents.filter(e => e.offer_type === 'implicit_not_accepted').length;
+    const implicitContractSent = dedupedOfferEvents.filter(e => e.offer_type === 'implicit_contract_sent').length;
+    console.log(`   - Direct (→ Offers Made): ${directCount}`);
+    console.log(`   - Implicit (→ Offer Not Accepted, skipped Offers Made): ${implicitNotAccepted}`);
+    console.log(`   - Implicit (→ Contract Sent, skipped Offers Made): ${implicitContractSent}`);
+  }
+
+  return {
+    count: dedupedOfferEvents.length,
+    offerEvents: dedupedOfferEvents
+  };
+};
+
+/**
+ * Get offer events for a specific date (for daily bucketing)
+ * Uses the same standardized counting logic as countOfferEvents
+ */
+export const getOfferEventsForDate = (stageChanges, targetDateStr) => {
+  // Stage constants
+  const OFFERS_MADE_STAGE = 'ACQ - Offers Made';
+  const OFFER_NOT_ACCEPTED_STAGE = 'ACQ - Offer Not Accepted';
+  const CONTRACT_SENT_STAGE = 'ACQ - Contract Sent';
+
+  // Pre-offer stages (same as in countOfferEvents)
+  const PRE_OFFER_STAGES = [
+    'ACQ - Qualified',
+    'ACQ - Needs Offer',
+    'Qualified Phase 2 - Day 3 to 2 Weeks',
+    'Qualified Phase 3 - 2 Weeks to 4 Weeks',
+    'ACQ - Listed on Market',
+    'ACQ - Went Cold - Drip Campaign',
+    'ACQ - Price Motivated',
+    'ACQ - Not Ready to Sell',
+    'ACQ - New Lead',
+    'ACQ - Contacted',
+    'ACQ - Attempted Contact'
+  ];
+
+  // Filter to the target date and identify offer events
+  const offerEvents = [];
+
+  stageChanges.forEach(change => {
+    // Convert to Eastern Time for date comparison
+    const changeDateTime = new Date(change.changed_at);
+    const easternDateStr = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'America/New_York',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    }).format(changeDateTime);
+
+    if (easternDateStr !== targetDateStr) {
+      return; // Not on target date
+    }
+
+    const stageTo = change.stage_to;
+    const stageFrom = change.stage_from;
+
+    let isOfferEvent = false;
+    let offerType = null;
+
+    if (stageTo === OFFERS_MADE_STAGE) {
+      isOfferEvent = true;
+      offerType = 'direct';
+    } else if (stageTo === OFFER_NOT_ACCEPTED_STAGE && PRE_OFFER_STAGES.includes(stageFrom)) {
+      isOfferEvent = true;
+      offerType = 'implicit_not_accepted';
+    } else if (stageTo === CONTRACT_SENT_STAGE && PRE_OFFER_STAGES.includes(stageFrom)) {
+      isOfferEvent = true;
+      offerType = 'implicit_contract_sent';
+    }
+
+    if (isOfferEvent) {
+      offerEvents.push({
+        person_id: change.person_id,
+        first_name: change.first_name,
+        last_name: change.last_name,
+        stage_from: stageFrom,
+        stage_to: stageTo,
+        changed_at: change.changed_at,
+        offer_type: offerType
+      });
+    }
+  });
+
+  return offerEvents;
+};
+
 // Calculate average time from ACQ - Qualified to ACQ - Offers Made
 // Enhanced approach: Include ALL offers made in the period, regardless of when they were qualified
 const calculateAvgTimeToOffer = (stageChanges) => {
@@ -477,11 +697,21 @@ export const processSupabaseData = (stageChanges, startDate, endDate, businessDa
   });
   console.log('📊 Unique stage transitions in requested period:', Array.from(stageTransitions).slice(0, 10));
 
+  // STANDARDIZED OFFER COUNTING: Get all deduplicated offer events first
+  // This includes direct offers + implicit offers (skipped Offers Made stage)
+  // with 24-hour deduplication per lead
+  const { count: totalOfferCount, offerEvents: dedupedOfferEvents } = countOfferEvents(requestedPeriodChanges);
+
+  // Create a Set of offer event keys for quick lookup during daily bucketing
+  const offerEventKeys = new Set(
+    dedupedOfferEvents.map(e => `${e.person_id}_${e.changed_at}`)
+  );
+
   // Count stage changes by day and stage (only for requested period)
   requestedPeriodChanges.forEach(change => {
     // Convert to Eastern Time before extracting date to avoid timezone plotting issues
     const changeDateTime = new Date(change.changed_at);
-    
+
     // Use Intl.DateTimeFormat for more reliable timezone conversion
     const easternDateStr = new Intl.DateTimeFormat('en-CA', {
       timeZone: 'America/New_York',
@@ -489,35 +719,42 @@ export const processSupabaseData = (stageChanges, startDate, endDate, businessDa
       month: '2-digit',
       day: '2-digit'
     }).format(changeDateTime);
-    
+
     const changeDate = easternDateStr; // Already in YYYY-MM-DD format
     const dayData = dailyData.find(d => d.date === changeDate);
-    
-    // Debug for Kathryn Bishop's offer specifically
-    if (change.stage_to === 'ACQ - Offers Made' && change.first_name === 'Kathryn') {
-      console.log(`🔍 DAILY BUCKET DEBUG - Kathryn Bishop:`);
-      console.log(`  - changeDate: ${changeDate}`);
-      console.log(`  - available dates in dailyData: [${dailyData.map(d => d.date).join(', ')}]`);
-      console.log(`  - dayData found: ${dayData ? 'YES' : 'NO'}`);
-    }
-    
+
     if (dayData) {
       if (change.stage_to === 'ACQ - Qualified') {
         dayData.qualified++;
-      } else if (change.stage_to === 'ACQ - Offers Made') {
-        console.log(`📅 Adding offer to daily bucket: ${change.first_name} ${change.last_name} on ${changeDate}`);
-        dayData.offers++;
       } else if (change.stage_to === 'ACQ - Price Motivated') {
         dayData.priceMotivated++;
       } else if (isThrowawayLead(change)) {
         console.log(`🗑️ Adding throwaway lead to daily bucket: ${change.first_name} ${change.last_name} on ${changeDate} (bucket: ${dayData.date})`);
         dayData.throwawayLeads++;
       }
+      // Note: Offers are handled separately below using deduplicated offer events
     } else {
       // Log when a change doesn't have a matching day bucket
       if (isThrowawayLead(change)) {
         console.log(`❌ Throwaway lead EXCLUDED (no day bucket): ${change.first_name} ${change.last_name} on ${changeDate}`);
       }
+    }
+  });
+
+  // Add deduplicated offer events to daily buckets
+  dedupedOfferEvents.forEach(offerEvent => {
+    const changeDateTime = new Date(offerEvent.changed_at);
+    const easternDateStr = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'America/New_York',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    }).format(changeDateTime);
+
+    const dayData = dailyData.find(d => d.date === easternDateStr);
+    if (dayData) {
+      console.log(`📅 Adding ${offerEvent.offer_type} offer to daily bucket: ${offerEvent.first_name} ${offerEvent.last_name} on ${easternDateStr} (${offerEvent.stage_from} → ${offerEvent.stage_to})`);
+      dayData.offers++;
     }
   });
 
@@ -567,12 +804,9 @@ export const processSupabaseData = (stageChanges, startDate, endDate, businessDa
     console.error('❌ Error calculating qualifiedTotal:', error);
   }
 
-  try {
-    offersTotal = dailyData.reduce((sum, day) => sum + (day.offers || 0), 0);
-    console.log('✅ offersTotal calculated:', offersTotal);
-  } catch (error) {
-    console.error('❌ Error calculating offersTotal:', error);
-  }
+  // Use the standardized offer count (already calculated with 24hr dedup)
+  offersTotal = totalOfferCount;
+  console.log('✅ offersTotal calculated (standardized):', offersTotal);
 
   try {
     priceMotivatedTotal = dailyData.reduce((sum, day) => sum + (day.priceMotivated || 0), 0);
@@ -644,32 +878,21 @@ export const processSupabaseData = (stageChanges, startDate, endDate, businessDa
       return changeDate >= currentWeekStart && changeDate <= today && change.stage_to === 'ACQ - Qualified';
     }).length;
   
-  const offersThisWeekData = allStageChanges
-    .filter(change => {
-      const changeDate = new Date(change.changed_at);
-      const isOfferStage = change.stage_to === 'ACQ - Offers Made';
-      const isInDateRange = changeDate >= currentWeekStart && changeDate <= today;
-      
-      if (isOfferStage) {
-        console.log(`🎯 OFFER FOUND: ${change.first_name} ${change.last_name} - In range: ${isInDateRange}`);
-      }
-      
-      return isInDateRange && isOfferStage;
-    });
-  offersThisWeek = offersThisWeekData.length;
+  // Use standardized offer counting for this week
+  const { count: offersThisWeekCount, offerEvents: offersThisWeekEvents } = countOfferEvents(
+    allStageChanges, currentWeekStart, today
+  );
+  offersThisWeek = offersThisWeekCount;
+  console.log(`🎯 Offers this week (standardized): ${offersThisWeek}`);
+  offersThisWeekEvents.forEach(offer => {
+    console.log(`  - ${offer.first_name} ${offer.last_name}: ${offer.offer_type} (${offer.stage_from} → ${offer.stage_to})`);
+  });
   
   // Debug logging
   console.log(`FRONTEND DEBUG - Current week: ${currentWeekStart.toISOString().split('T')[0]} to ${today.toISOString().split('T')[0]}`);
   console.log(`FRONTEND DEBUG - Total stage changes received: ${allStageChanges.length}`);
-  console.log(`FRONTEND DEBUG - Offers this week calculated: ${offersThisWeek}`);
-  offersThisWeekData.forEach(offer => {
-    console.log(`  - ${offer.changed_at}: ${offer.first_name} ${offer.last_name}`);
-  });
-  
-  // COMPARISON DEBUG - Why is daily total 0 while weekly calculation shows 1?
-  console.log('🔍 COMPARISON DEBUG:');
-  console.log(`  - offersTotal (from daily buckets): ${offersTotal}`);
-  console.log(`  - offersThisWeek (from weekly calculation): ${offersThisWeek}`);
+  console.log(`FRONTEND DEBUG - Offers this week (standardized): ${offersThisWeek}`);
+  console.log(`FRONTEND DEBUG - Offers total (standardized): ${offersTotal}`);
   
   priceMotivatedThisWeek = allStageChanges
     .filter(change => {
@@ -690,11 +913,11 @@ export const processSupabaseData = (stageChanges, startDate, endDate, businessDa
       return changeDate >= lastWeekStart && changeDate <= lastWeekEnd && change.stage_to === 'ACQ - Qualified';
     }).length;
   
-  offersLastWeek = allStageChanges
-    .filter(change => {
-      const changeDate = new Date(change.changed_at);
-      return changeDate >= lastWeekStart && changeDate <= lastWeekEnd && change.stage_to === 'ACQ - Offers Made';
-    }).length;
+  // Use standardized offer counting for last week
+  const { count: offersLastWeekCount } = countOfferEvents(
+    allStageChanges, lastWeekStart, lastWeekEnd
+  );
+  offersLastWeek = offersLastWeekCount;
   
   priceMotivatedLastWeek = allStageChanges
     .filter(change => {
@@ -779,7 +1002,10 @@ export const processSupabaseData = (stageChanges, startDate, endDate, businessDa
   }
 
   // Calculate campaign metrics (from requested period only)
+  // Use standardized offer counting for campaign attribution
   const campaignCounts = {};
+
+  // First, count qualified and price motivated from all stage changes
   requestedPeriodChanges.forEach(change => {
     const campaign = change.campaign_id || 'No Campaign';
 
@@ -794,14 +1020,32 @@ export const processSupabaseData = (stageChanges, startDate, endDate, businessDa
 
     if (change.stage_to === 'ACQ - Qualified') {
       campaignCounts[campaign].qualified++;
-    } else if (change.stage_to === 'ACQ - Offers Made') {
-      campaignCounts[campaign].offers++;
     } else if (change.stage_to === 'ACQ - Price Motivated') {
       campaignCounts[campaign].priceMotivated++;
     }
 
     // Count all stage changes as "leads" for this campaign
     campaignCounts[campaign].leads++;
+  });
+
+  // Add offers from deduplicated offer events (standardized counting)
+  // Need to look up campaign_id from the original stage changes
+  dedupedOfferEvents.forEach(offerEvent => {
+    // Find the original change to get campaign_id
+    const originalChange = requestedPeriodChanges.find(
+      c => c.person_id === offerEvent.person_id && c.changed_at === offerEvent.changed_at
+    );
+    const campaign = originalChange?.campaign_id || 'No Campaign';
+
+    if (!campaignCounts[campaign]) {
+      campaignCounts[campaign] = {
+        qualified: 0,
+        offers: 0,
+        priceMotivated: 0,
+        leads: 0
+      };
+    }
+    campaignCounts[campaign].offers++;
   });
 
   const campaignMetrics = Object.entries(campaignCounts)

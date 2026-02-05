@@ -313,10 +313,161 @@ def query_open_offers_metrics(fub_api_key: str) -> Dict[str, Dict[str, Any]]:
     return result
 
 
+def query_standardized_offer_metrics(start_date: datetime, end_date: datetime) -> Dict[str, int]:
+    """
+    Query standardized offer metrics with the following rules:
+
+    1. Direct offers: Transition TO 'ACQ - Offers Made'
+    2. Implicit offers: Transition TO 'ACQ - Offer Not Accepted' FROM a pre-offer stage
+    3. Implicit offers: Transition TO 'ACQ - Contract Sent' FROM a pre-offer stage
+
+    Pre-offer stages are stages where an offer hasn't been made yet:
+    - ACQ - Qualified, ACQ - Needs Offer, Qualified Phase 2/3, etc.
+
+    Post-offer stages (where an offer was already made) do NOT trigger implicit offers:
+    - ACQ - Offers Made, ACQ - Contract Sent, ACQ - Under Contract, etc.
+
+    24-hour deduplication: One lead can only count as 1 offer per 24-hour window.
+    Multiple offers for the same lead are valid if 24+ hours apart.
+
+    Returns: {agent_name: offer_count, ...}
+    """
+    if not SUPABASE_DB_URL:
+        print("ERROR: SUPABASE_DB_URL not set")
+        sys.exit(1)
+
+    conn = psycopg2.connect(SUPABASE_DB_URL, sslmode='require')
+    offer_counts = {}
+
+    # Pre-offer stages (stages where an offer hasn't been made yet)
+    # Implicit offers only count when coming FROM these stages
+    pre_offer_stages = (
+        'ACQ - Qualified',
+        'ACQ - Needs Offer',
+        'Qualified Phase 2 - Day 3 to 2 Weeks',
+        'Qualified Phase 3 - 2 Weeks to 4 Weeks',
+        'ACQ - Listed on Market',
+        'ACQ - Went Cold - Drip Campaign',
+        'ACQ - Price Motivated',
+        'ACQ - Not Ready to Sell',
+        'ACQ - New Lead',
+        'ACQ - Contacted',
+        'ACQ - Attempted Contact'
+    )
+
+    try:
+        with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
+            # Query all offer events (direct + implicit) with 24-hour deduplication
+            cur.execute("""
+                WITH offer_events AS (
+                    -- Direct offers: transition TO 'ACQ - Offers Made'
+                    SELECT
+                        person_id,
+                        changed_at,
+                        COALESCE(
+                            assigned_user_name,
+                            raw_payload->>'assignedTo',
+                            CASE WHEN changed_at < '2025-12-19' THEN 'Madeleine Penales' ELSE 'Unassigned' END
+                        ) as agent,
+                        'direct' as offer_type
+                    FROM stage_changes
+                    WHERE changed_at >= %s
+                      AND changed_at < %s
+                      AND stage_to = 'ACQ - Offers Made'
+
+                    UNION ALL
+
+                    -- Implicit offers via Offer Not Accepted (skipped Offers Made stage)
+                    -- Only counts when coming FROM a pre-offer stage
+                    SELECT
+                        person_id,
+                        changed_at,
+                        COALESCE(
+                            assigned_user_name,
+                            raw_payload->>'assignedTo',
+                            CASE WHEN changed_at < '2025-12-19' THEN 'Madeleine Penales' ELSE 'Unassigned' END
+                        ) as agent,
+                        'implicit_not_accepted' as offer_type
+                    FROM stage_changes
+                    WHERE changed_at >= %s
+                      AND changed_at < %s
+                      AND stage_to = 'ACQ - Offer Not Accepted'
+                      AND stage_from IN %s
+
+                    UNION ALL
+
+                    -- Implicit offers via Contract Sent (skipped Offers Made stage)
+                    -- Only counts when coming FROM a pre-offer stage
+                    SELECT
+                        person_id,
+                        changed_at,
+                        COALESCE(
+                            assigned_user_name,
+                            raw_payload->>'assignedTo',
+                            CASE WHEN changed_at < '2025-12-19' THEN 'Madeleine Penales' ELSE 'Unassigned' END
+                        ) as agent,
+                        'implicit_contract_sent' as offer_type
+                    FROM stage_changes
+                    WHERE changed_at >= %s
+                      AND changed_at < %s
+                      AND stage_to = 'ACQ - Contract Sent'
+                      AND stage_from IN %s
+                ),
+                -- Add previous offer time for 24-hour deduplication
+                offer_events_with_prev AS (
+                    SELECT
+                        person_id,
+                        changed_at,
+                        agent,
+                        offer_type,
+                        LAG(changed_at) OVER (PARTITION BY person_id ORDER BY changed_at) as prev_offer_time
+                    FROM offer_events
+                ),
+                -- Filter to only include offers that are 24+ hours from previous offer
+                deduped_offers AS (
+                    SELECT *
+                    FROM offer_events_with_prev
+                    WHERE prev_offer_time IS NULL
+                       OR EXTRACT(EPOCH FROM (changed_at - prev_offer_time)) / 3600 >= 24
+                )
+                SELECT
+                    agent,
+                    COUNT(*) as offer_count,
+                    COUNT(*) FILTER (WHERE offer_type = 'direct') as direct_count,
+                    COUNT(*) FILTER (WHERE offer_type = 'implicit_not_accepted') as implicit_not_accepted_count,
+                    COUNT(*) FILTER (WHERE offer_type = 'implicit_contract_sent') as implicit_contract_sent_count
+                FROM deduped_offers
+                GROUP BY agent
+                ORDER BY agent
+            """, (start_date, end_date, start_date, end_date, pre_offer_stages, start_date, end_date, pre_offer_stages))
+
+            for row in cur.fetchall():
+                agent = row['agent']
+                offer_counts[agent] = row['offer_count']
+
+                # Debug logging
+                print(f"  Offers for {agent}: {row['offer_count']} "
+                      f"(direct: {row['direct_count']}, "
+                      f"implicit_not_accepted: {row['implicit_not_accepted_count']}, "
+                      f"implicit_contract_sent: {row['implicit_contract_sent_count']})")
+
+    finally:
+        conn.close()
+
+    return offer_counts
+
+
 def query_stage_metrics(start_date: datetime, end_date: datetime) -> Dict[str, Dict[str, int]]:
     """
     Query Supabase for stage change metrics grouped by agent.
     Returns: {agent_name: {stage_name: count, ...}, ...}
+
+    Note: For 'ACQ - Offers Made', this function uses standardized counting
+    via query_standardized_offer_metrics() which includes:
+    - Direct offers (transition TO 'ACQ - Offers Made')
+    - Implicit offers (transition TO 'ACQ - Offer Not Accepted' or 'ACQ - Contract Sent'
+      where they skipped the 'ACQ - Offers Made' stage)
+    - 24-hour deduplication per lead
     """
     if not SUPABASE_DB_URL:
         print("ERROR: SUPABASE_DB_URL not set")
@@ -325,15 +476,21 @@ def query_stage_metrics(start_date: datetime, end_date: datetime) -> Dict[str, D
     conn = psycopg2.connect(SUPABASE_DB_URL, sslmode='require')
     metrics = {}
 
+    # First, get standardized offer counts
+    print("  Querying standardized offer metrics...")
+    offer_counts = query_standardized_offer_metrics(start_date, end_date)
+
+    # Stages to query with existing logic (excluding 'ACQ - Offers Made')
+    non_offer_stages = [s for s in TRACKED_STAGES if s != "ACQ - Offers Made"]
+
     try:
         with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
-            # Query stage changes within date range, grouped by agent and stage
+            # Query stage changes for non-offer stages
             # Use COALESCE to fall back to raw_payload->>'assignedTo' for older records
             # where assigned_user_name wasn't populated.
             # For records before Dec 19, 2025 with no agent info, default to Madeleine Penales
             # (she was the only acquisition agent at that time)
             # Count DISTINCT person_id to avoid counting the same lead multiple times
-            # (e.g., if a lead moves out of and back into a stage)
             cur.execute("""
                 SELECT
                     COALESCE(
@@ -353,7 +510,7 @@ def query_stage_metrics(start_date: datetime, end_date: datetime) -> Dict[str, D
                     CASE WHEN changed_at < '2025-12-19' THEN 'Madeleine Penales' ELSE 'Unassigned' END
                 ), stage_to
                 ORDER BY 1, 2
-            """, (start_date, end_date, tuple(TRACKED_STAGES)))
+            """, (start_date, end_date, tuple(non_offer_stages)))
 
             for row in cur.fetchall():
                 agent = row['agent']
@@ -363,6 +520,12 @@ def query_stage_metrics(start_date: datetime, end_date: datetime) -> Dict[str, D
                 if agent not in metrics:
                     metrics[agent] = {s: 0 for s in TRACKED_STAGES}
                 metrics[agent][stage] = count
+
+        # Merge in the standardized offer counts
+        for agent, offer_count in offer_counts.items():
+            if agent not in metrics:
+                metrics[agent] = {s: 0 for s in TRACKED_STAGES}
+            metrics[agent]["ACQ - Offers Made"] = offer_count
 
     finally:
         conn.close()
@@ -875,10 +1038,18 @@ def write_to_google_sheets(
     latest_rows.append([""])
 
     # Metadata rows
-    # end_date is Monday 00:00, so subtract 1 day to show Sunday (actual last day of data)
-    display_end_date = end_date - timedelta(days=1)
+    # For previous week report: end_date is Monday 00:00, so subtract 1 day to show Sunday
+    # For midweek report: end_date is the current time (e.g., Wed 2pm), so show date with time
+    if end_date.hour == 0 and end_date.minute == 0:
+        # Previous week report - end_date is midnight, so show previous day
+        display_end_date = end_date - timedelta(days=1)
+        date_range_str = f"{start_date.strftime('%Y-%m-%d')} to {display_end_date.strftime('%Y-%m-%d')}"
+    else:
+        # Midweek report - show the actual end date with time clarification
+        display_end_date = end_date
+        date_range_str = f"{start_date.strftime('%Y-%m-%d')} to {display_end_date.strftime('%Y-%m-%d')} (through {display_end_date.strftime('%I:%M %p')} ET)"
     latest_rows.append(["Report Generated:", datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')])
-    latest_rows.append(["Date Range:", f"{start_date.strftime('%Y-%m-%d')} to {display_end_date.strftime('%Y-%m-%d')}"])
+    latest_rows.append(["Date Range:", date_range_str])
 
     latest_ws.update(latest_rows, 'A1')
 
@@ -1001,9 +1172,16 @@ def generate_email_html(
     else:
         html += f"<h2>Weekly AM Metrics and KPIs Report</h2>"
 
-    # end_date is Monday 00:00, so subtract 1 day to show Sunday (actual last day of data)
-    display_end_date = end_date - timedelta(days=1)
-    html += f"<p>Date Range: {start_date.strftime('%Y-%m-%d')} to {display_end_date.strftime('%Y-%m-%d')}</p>"
+    # For previous week report: end_date is Monday 00:00, so subtract 1 day to show Sunday
+    # For midweek report: end_date is the current time (e.g., Wed 2pm), so just use the date
+    if is_midweek:
+        # Midweek report - show the actual end date with time
+        display_end_date = end_date
+        html += f"<p>Date Range: {start_date.strftime('%Y-%m-%d')} to {display_end_date.strftime('%Y-%m-%d')} (through {display_end_date.strftime('%I:%M %p')} ET)</p>"
+    else:
+        # Previous week report - end_date is midnight, so show previous day
+        display_end_date = end_date - timedelta(days=1)
+        html += f"<p>Date Range: {start_date.strftime('%Y-%m-%d')} to {display_end_date.strftime('%Y-%m-%d')}</p>"
 
     # Start table
     html += "<table>"
