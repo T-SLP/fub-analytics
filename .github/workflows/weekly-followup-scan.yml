@@ -1,0 +1,63 @@
+name: Weekly Follow-up Lead Scan
+
+on:
+  schedule:
+    # Run at 7:00 AM ET on Mondays (12:00 UTC during EST, 11:00 UTC during EDT)
+    - cron: '0 12 * * 1'  # Monday only
+  workflow_dispatch:  # Allow manual trigger
+    inputs:
+      dry_run:
+        description: 'Dry run (no email, no LLM)'
+        required: false
+        type: boolean
+        default: false
+      force:
+        description: 'Force re-analyze all leads (ignore change detection)'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30  # Weekly scan may take longer
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests psycopg2-binary python-dotenv anthropic
+
+      - name: Run Weekly Follow-up Scan
+        env:
+          FUB_API_KEY: ${{ secrets.FUB_API_KEY }}
+          FUB_SUBDOMAIN: ${{ secrets.FUB_SUBDOMAIN }}
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GMAIL_EMAIL: ${{ secrets.GMAIL_EMAIL }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          HOT_SHEET_RECIPIENTS: ${{ secrets.HOT_SHEET_RECIPIENTS }}
+        run: |
+          cd reports
+
+          # Build command with optional arguments
+          CMD="python weekly_followup_scan.py"
+
+          if [ "${{ inputs.dry_run }}" == "true" ]; then
+            CMD="$CMD --dry-run"
+          fi
+
+          if [ "${{ inputs.force }}" == "true" ]; then
+            CMD="$CMD --force"
+          fi
+
+          echo "Running: $CMD"
+          $CMD
