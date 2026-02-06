@@ -14,6 +14,7 @@ The bundled data can then be used for LLM analysis, reporting, or other purposes
 import os
 import sys
 import base64
+import time
 from datetime import datetime
 from pathlib import Path
 from typing import Optional, List, Dict, Any, Union
@@ -97,24 +98,62 @@ class LeadDataFetcher:
             'Content-Type': 'application/json'
         }
 
-    def _make_request(self, endpoint: str, params: Optional[Dict] = None) -> Optional[Dict]:
-        """Make a request to the FUB API"""
-        try:
-            response = self.session.get(
-                f'{self.base_url}/{endpoint}',
-                params=params,
-                timeout=30
-            )
-            if response.status_code == 200:
-                return response.json()
-            elif response.status_code == 404:
+    def _make_request(self, endpoint: str, params: Optional[Dict] = None, max_retries: int = 3) -> Optional[Dict]:
+        """Make a request to the FUB API with proactive rate limit handling.
+
+        FUB rate limits: 200 requests per 10 second sliding window.
+        Response headers include X-RateLimit-Remaining to track usage.
+        """
+        retry_count = 0
+        base_delay = 2.0  # Start with 2 second delay for retries
+
+        while retry_count <= max_retries:
+            try:
+                response = self.session.get(
+                    f'{self.base_url}/{endpoint}',
+                    params=params,
+                    timeout=30
+                )
+
+                # Proactively check rate limit headers and pause before hitting limit
+                # FUB allows 200 requests per 10 second window
+                remaining = response.headers.get('X-RateLimit-Remaining')
+                window = response.headers.get('X-RateLimit-Window', '10')
+                if remaining is not None:
+                    remaining = int(remaining)
+                    if remaining < 10:
+                        # Getting very close to limit - pause to let window reset
+                        pause_time = float(window)  # Wait for full window reset
+                        print(f"  Rate limit low ({remaining} remaining), pausing {pause_time:.1f}s...")
+                        time.sleep(pause_time)
+
+                if response.status_code == 200:
+                    return response.json()
+                elif response.status_code == 404:
+                    return None
+                elif response.status_code == 429:
+                    # Rate limited - wait and retry with exponential backoff
+                    retry_count += 1
+                    if retry_count > max_retries:
+                        print(f"  Warning: Rate limit exceeded for {endpoint} after {max_retries} retries")
+                        return None
+                    # Check for Retry-After header
+                    retry_after = response.headers.get('Retry-After')
+                    if retry_after:
+                        delay = float(retry_after)
+                    else:
+                        delay = base_delay * (2 ** (retry_count - 1))  # Exponential backoff
+                    print(f"  Rate limited on {endpoint}, waiting {delay:.1f}s (attempt {retry_count}/{max_retries})")
+                    time.sleep(delay)
+                    continue
+                else:
+                    print(f"  Warning: API request failed for {endpoint}: {response.status_code}")
+                    return None
+            except Exception as e:
+                print(f"  Warning: Exception during API request for {endpoint}: {e}")
                 return None
-            else:
-                print(f"  Warning: API request failed for {endpoint}: {response.status_code}")
-                return None
-        except Exception as e:
-            print(f"  Warning: Exception during API request for {endpoint}: {e}")
-            return None
+
+        return None
 
     def _fetch_person(self, person_id: int) -> Optional[Dict]:
         """Fetch the person record with custom fields"""

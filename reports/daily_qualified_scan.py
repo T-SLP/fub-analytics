@@ -39,6 +39,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'shared'))
 
 from database import get_db_client
 from lead_data_fetcher import LeadDataFetcher, format_bundle_for_llm
+from lead_preprocessor import preprocess_bundle
 
 # Try to import Anthropic
 try:
@@ -449,7 +450,8 @@ def main():
 
     # Process each lead
     results = []
-    print(f"\n[2] Analyzing {len(new_leads)} leads...")
+    preprocessed_leads = []  # Collect preprocessed leads for combined JSON output
+    print(f"\n[2] Fetching and preprocessing {len(new_leads)} leads...")
 
     for i, lead in enumerate(new_leads, 1):
         person_id = lead['person_id']
@@ -461,6 +463,10 @@ def main():
         if not bundle:
             print(f"        [SKIP] Could not fetch lead data")
             continue
+
+        # Preprocess to reduce JSON size (~80% reduction)
+        bundle = preprocess_bundle(bundle)
+        preprocessed_leads.append(bundle)
 
         # Compute data hash
         data_hash = compute_data_hash(bundle)
@@ -484,6 +490,14 @@ def main():
             'bundle': bundle,
             'analysis': analysis
         })
+
+    # Export combined preprocessed JSON (for testing or API batch processing)
+    if dry_run and preprocessed_leads:
+        json_path = Path(__file__).parent.parent / 'test_exports' / 'daily_qualified_leads.json'
+        json_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(json_path, 'w', encoding='utf-8') as f:
+            json.dump(preprocessed_leads, f, indent=2, default=str)
+        print(f"    Exported {len(preprocessed_leads)} preprocessed leads to: {json_path}")
 
     # Generate report
     print(f"\n[3] Generating email report...")

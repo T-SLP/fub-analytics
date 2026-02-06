@@ -40,6 +40,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'shared'))
 
 from database import get_db_client
 from lead_data_fetcher import LeadDataFetcher, format_bundle_for_llm
+from lead_preprocessor import preprocess_bundle
 
 # Try to import Anthropic
 try:
@@ -534,18 +535,24 @@ def main():
         record_run(db, 0, 0, [], 'completed')
         return 0
 
+    # Preprocess all bundles first (reduces JSON size by ~80%)
+    print(f"\n[2] Preprocessing {len(all_bundles)} leads...")
+    preprocessed_bundles = []
+    for bundle in all_bundles:
+        preprocessed_bundles.append(preprocess_bundle(bundle))
+
     # Process each lead
     results = []
     skipped_count = 0
 
-    print(f"\n[2] Analyzing leads (checking for changes)...")
+    print(f"\n[3] Analyzing leads (checking for changes)...")
 
-    for i, bundle in enumerate(all_bundles, 1):
+    for i, bundle in enumerate(preprocessed_bundles, 1):
         person_id = str(bundle['person_id'])
         person_name = bundle['lead_info']['name']
         stage = bundle['lead_info']['stage']
 
-        print(f"    [{i}/{len(all_bundles)}] {person_name}", end="")
+        print(f"    [{i}/{len(preprocessed_bundles)}] {person_name}", end="")
 
         # Compute current data hash
         current_hash = compute_data_hash(bundle)
@@ -585,8 +592,16 @@ def main():
             'has_changed': has_changed
         })
 
+    # Export combined preprocessed JSON (for testing or API batch processing)
+    if dry_run and preprocessed_bundles:
+        json_path = Path(__file__).parent.parent / 'test_exports' / 'weekly_followup_leads.json'
+        json_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(json_path, 'w', encoding='utf-8') as f:
+            json.dump(preprocessed_bundles, f, indent=2, default=str)
+        print(f"    Exported {len(preprocessed_bundles)} preprocessed leads to: {json_path}")
+
     # Generate report
-    print(f"\n[3] Generating email report...")
+    print(f"\n[4] Generating email report...")
     html_report = generate_email_html(results, skipped_count)
 
     # Send email (unless dry run)
