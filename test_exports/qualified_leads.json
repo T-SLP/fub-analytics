@@ -1,7 +1,7 @@
 [
   {
     "person_id": 580968,
-    "fetched_at": "2026-02-06T09:14:36.004462",
+    "fetched_at": "2026-02-09T09:14:25.045948",
     "lead_info": {
       "name": "John Maske",
       "stage": "ACQ - Qualified",
@@ -99,14 +99,14 @@
   },
   {
     "person_id": 580057,
-    "fetched_at": "2026-02-06T09:14:46.484526",
+    "fetched_at": "2026-02-09T09:14:35.503020",
     "lead_info": {
       "name": "Travis Hamilton",
       "stage": "ACQ - Qualified",
       "assigned_to": "Madeleine Penales",
       "source": "Land Data Import",
       "created": "2026-02-02",
-      "last_activity": "2026-02-05",
+      "last_activity": "2026-02-06",
       "tags": [
         "SC - Qualified",
         "Smarter Contact"
@@ -140,156 +140,68 @@
         "date": "2026-02-05",
         "author": "Iris Dymphna Samson",
         "body": "Lead Name: Travis \nMultiple Parcels?: No\nConfirm Acreage(s): 35.0 acres (Franklin County)\nRoad Access: Not confirmed\nStructures: None mentioned\nHave Made Any Improvements: Not discussed\nUtilities: Not confirmed\nEasements or Restrictions: Not disclosed\nListed with a Realtor: No\nDecision Makers: Travis (appears to be sole decision maker)\nTimeline: Not specified\nPrice Objective:\nSeller states value is $80,000\u2013$120,000 total, referencing $2,500\u2013$3,500 per acre based on last research\nConfirm Phone Number: +13136467099\nEmail: Not provided\nOther Important Notes:\nSeller prefers text over phone calls due to voice difficulty\nResponds casually (\u201cI\u2019m good homie\u201d) and appears comfortable texting\nAcknowledges property value and is confident in pricing\nOpen to discussion but availability for calls not clearly confirmed\nEffort Signals:\nSame-day text response: Yes\nReturned call: No (prefers text)\nEngaged in conversation: Yes\nPersonal tone / humor: Yes\nCall lasted 5+ minutes: No call completed"
-      }
-    ],
-    "tasks": [
-      {
-        "name": "Day 1 - Qualify - Triple Dial - Morning",
-        "due": "2026-02-05",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-05",
-        "last_updated_by": "Follow Up Boss"
       },
       {
-        "name": "Day 1 - Qualify - Triple Dial - Afternoon / Evening",
-        "due": "2026-02-05",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-05",
-        "last_updated_by": "Follow Up Boss"
-      }
-    ],
-    "summary": {
-      "total_notes": 2,
-      "total_calls": 0,
-      "total_talk_time_seconds": 0,
-      "outbound_calls": 0,
-      "inbound_calls": 0,
-      "connected_calls": 0,
-      "unanswered_attempts": 0,
-      "last_note_date": "2026-02-05",
-      "total_texts": 0,
-      "outbound_texts": 0,
-      "inbound_texts": 0
-    }
-  },
-  {
-    "person_id": 579766,
-    "fetched_at": "2026-02-06T09:14:56.916552",
-    "lead_info": {
-      "name": "Tanner Maddox",
-      "stage": "ACQ - Qualified",
-      "assigned_to": "Madeleine Penales",
-      "source": "Land Data Import",
-      "created": "2026-02-02",
-      "last_activity": "2026-02-03",
-      "tags": [
-        "SC - Qualified",
-        "Smarter Contact"
-      ],
-      "phones": [
-        "2052695977",
-        "2054869291",
-        "2815137604"
-      ]
-    },
-    "market_values": {
-      "county_value": 74700.0,
-      "li_comp_value": 342515.0
-    },
-    "property_info": {
-      "county": "Franklin",
-      "state": "AL",
-      "acreage": 162.0,
-      "road_frontage": 0.0,
-      "li_confidence": 81
-    },
-    "notes": [
-      {
-        "date": "2026-02-02",
-        "author": "Travis Rogers",
-        "body": "MESSAGING HISTORY\n[2026-02-02 SENT] Hi Tanner, I noticed your 162.0 acres in Franklin County. Would you be open to discussing its potential sale? - Iris\n[2026-02-02 RECEIVED] Yes\n[2026-02-02 SENT] Let me get a few details from you so we can build out an offer.\nCan you tell me more about this property? Is there a road access? Are utilities available? and are you aware of any easements or restrictions?\n[2026-02-02 RECEIVED] No road access. Utilities are available. I have an easement\n[2026-02-02 SENT] Thank you for the information. You're also the sole owner, right?\n[2026-02-02 RECEIVED] Yes\n[2026-02-02 SENT] I'm also curious, I know you're asking for an offer but we want to make sure that we can meet your goals and expectations about the price. Do you have a price in mind for this tract?\n[2026-02-02 RECEIVED] 480k\n[2026-02-02 SENT] Got it. Based on our conversation, I'd like to have our manager, Madeleine to give you a call to discuss an offer. When are you available for a quick call? Mornings or afternoons?\n[2026-02-02 RECEIVED] I'm available any time\n[2026-02-02 SENT] Perfect! Do you also have an email address just in case?",
-        "source": "Zapier",
-        "subject": "Smarter Contact - New Lead Push"
-      },
-      {
-        "date": "2026-02-02",
-        "author": "Iris Dymphna Samson",
-        "body": "Lead Name: Tanner\n County: Franklin County\nMultiple parcels? No\n Confirm acreage(s): 162.0 acres\nRoad Access: No direct road access\n Structures: None mentioned\n Have made any improvements: Not discussed\nUtilities: Available\n Easements or Restrictions: Has an easement (access)\nListed with a realtor: No\n Decision Makers: Sole owner (confirmed)\nTimeline: Not specified (open to discussion)\n Price Objective: $480,000\nConfirm phone number: +12052695977\n Email: Requested, not yet provided\nOther Important Notes:\nOwner is open to selling\nAsked for an offer\nAvailable anytime\nOpen to a call with manager (Madeleine)\nEffort Signals\nResponded same day (text): Yes\nReturned call (cold call): N/A\nEngaged willingly in conversation: Yes\nPersonal tone or humor: Neutral\u2013positive\nCall lasted 5+ minutes: N/A (text conversation)"
+        "date": "2026-02-06",
+        "author": "Madeleine Penales",
+        "body": "PREFERS TEXT COMMUNICATION"
       }
     ],
     "text_messages": [
       {
-        "date": "2026-02-03",
+        "date": "2026-02-06",
         "direction": "outbound",
         "by": "Madeleine Penales"
       },
       {
-        "date": "2026-02-03",
+        "date": "2026-02-06",
         "direction": "inbound"
       }
     ],
     "tasks": [
       {
         "name": "Day 1 - Qualify - Triple Dial - Morning",
-        "due": "2026-02-02",
+        "due": "2026-02-05",
         "completed": false,
         "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-02",
+        "last_updated": "2026-02-05",
         "last_updated_by": "Follow Up Boss"
       },
       {
         "name": "Day 1 - Qualify - Triple Dial - Afternoon / Evening",
-        "due": "2026-02-02",
+        "due": "2026-02-05",
         "completed": false,
         "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-02",
-        "last_updated_by": "Follow Up Boss"
-      },
-      {
-        "name": "Day 2 - Qualify - Triple Dial - Afternoon / Evening",
-        "due": "2026-02-03",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-03",
-        "last_updated_by": "Follow Up Boss"
-      },
-      {
-        "name": "Day 2 - Qualify - Triple Dial - Morning",
-        "due": "2026-02-03",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-03",
+        "last_updated": "2026-02-05",
         "last_updated_by": "Follow Up Boss"
       }
     ],
     "summary": {
-      "total_notes": 2,
+      "total_notes": 3,
       "total_calls": 0,
       "total_talk_time_seconds": 0,
       "outbound_calls": 0,
       "inbound_calls": 0,
       "connected_calls": 0,
       "unanswered_attempts": 0,
-      "last_note_date": "2026-02-02",
+      "last_note_date": "2026-02-06",
       "total_texts": 2,
       "outbound_texts": 1,
       "inbound_texts": 1,
       "text_response_rate": 100,
-      "last_text_date": "2026-02-03"
+      "last_text_date": "2026-02-06"
     }
   },
   {
     "person_id": 578104,
-    "fetched_at": "2026-02-06T09:15:07.325095",
+    "fetched_at": "2026-02-09T09:14:45.987296",
     "lead_info": {
       "name": "Gary Will",
       "stage": "ACQ - Qualified",
       "assigned_to": "Madeleine Penales",
       "source": "Land Data Import",
       "created": "2026-02-02",
-      "last_activity": "2026-02-05",
+      "last_activity": "2026-02-06",
       "tags": [
         "SC - Qualified",
         "Smarter Contact"
@@ -323,6 +235,11 @@
         "date": "2026-02-04",
         "author": "Iris Dymphna Samson",
         "body": "Lead Name: Gary\n Multiple parcels? No\n Confirm acreage(s): 131.3 acres\nRoad Access:\nSits on Hwy 31\n~300+ ft road frontage\nStructures:\n3,400 sq ft home\nBuilt in 1998\n5-bedroom home\nNo lien on house and land\nHave made any improvements:\n12 sites already perked for 6-bedroom homes\nPotential for additional build sites\nStocked, spring-fed pond\nUtilities:\nNot specifically confirmed\nEasements or Restrictions:\nNo trailers allowed\nHomes must be minimum 1,300 sq ft\nGreenbelt tax status\nListed with a realtor:\nNo\nDecision Makers:\nAppears to be sole owner (needs final confirmation but implied yes)\nTimeline:\nPlanning to sell and/or develop in Spring\nPrice Objective:\nSeller believes value is around $6,000\u2013$10,000 per acre\nIndicated he will pass on lowball offers\nConfirm phone number:\n+19312167069\nEmail:\nNot collected\nOther Important Notes:\nProperty features creek, rolling to hilly landscape, wildlife, and marketable timber\nSeller appears knowledgeable about land value and development potential\nExpressed strong preference to avoid low offers\nInitially declined but remained responsive to conversation\nEffort Signals:\nDid contact respond same day (text)? Yes\nDid contact call back? No\nDid contact happily engage in conversation? Moderately engaged but cautious\nDid contact show personal tone or humor? Slightly direct/firm tone\nDid call last 5+ minutes? N/A (text conversation only)"
+      },
+      {
+        "date": "2026-02-06",
+        "author": "Travis Rogers",
+        "body": "@Madeleine Penales may be something here if a private drive would be allowable to access subdivided lots further back. Ask him about the 12 other sites that are already perked for 6-bedroom homes. Ask him if he's ever looked into whether the county would permit subdividing his parcel with the minimum public road frontage, therefore it would need a private road. My main concern is whether or not we could subdivide further back with a private road."
       }
     ],
     "tasks": [
@@ -360,14 +277,14 @@
       }
     ],
     "summary": {
-      "total_notes": 2,
+      "total_notes": 3,
       "total_calls": 0,
       "total_talk_time_seconds": 0,
       "outbound_calls": 0,
       "inbound_calls": 0,
       "connected_calls": 0,
       "unanswered_attempts": 0,
-      "last_note_date": "2026-02-04",
+      "last_note_date": "2026-02-06",
       "total_texts": 0,
       "outbound_texts": 0,
       "inbound_texts": 0
@@ -375,7 +292,7 @@
   },
   {
     "person_id": 576220,
-    "fetched_at": "2026-02-06T09:15:17.776395",
+    "fetched_at": "2026-02-09T09:14:56.486113",
     "lead_info": {
       "name": "Lamar Wiggins",
       "stage": "ACQ - Qualified",
@@ -494,81 +411,80 @@
     }
   },
   {
-    "person_id": 576217,
-    "fetched_at": "2026-02-06T09:15:28.257946",
+    "person_id": 571837,
+    "fetched_at": "2026-02-09T09:15:06.893014",
     "lead_info": {
-      "name": "Jean Powell",
+      "name": "John Jones",
       "stage": "ACQ - Qualified",
       "assigned_to": "Madeleine Penales",
       "source": "Land Data Import",
-      "created": "2026-02-02",
-      "last_activity": "2026-02-05",
+      "created": "2026-01-26",
+      "last_activity": "2026-02-07",
       "tags": [
         "SC - Qualified",
         "Smarter Contact"
       ],
       "phones": [
-        "2519785401",
-        "2513688454",
-        "2519685401"
+        "6157191400",
+        "6157893910"
       ]
     },
     "market_values": {
-      "county_value": 150950.0,
-      "li_comp_value": 190653.0
+      "county_value": 191500.0,
+      "li_comp_value": 223126.0
     },
     "property_info": {
-      "county": "Escambia",
-      "state": "AL",
-      "acreage": 70.0,
-      "road_frontage": 0.0,
-      "li_confidence": 81
+      "county": "Dickson",
+      "state": "TN",
+      "acreage": 20.14,
+      "road_frontage": 671.0,
+      "li_confidence": 90
     },
     "notes": [
       {
-        "date": "2026-02-04",
+        "date": "2026-02-06",
         "author": "Travis Rogers",
-        "body": "MESSAGING HISTORY\n[2026-02-02 SENT] Hi Jean, I wanted to see if you've thought about opportunities for your 70.0 acres in Escambia County. - Iris\n[2026-02-04 SENT] Hi Jean, Iris again. When would you prefer to discuss your land in Escambia County? Text if interested.\n[2026-02-04 RECEIVED] I have 16 1/2 aces that I would sell.  Only a cash for the property. 80,000\n[2026-02-04 RECEIVED] Located in Escambia Co. AL.\n[2026-02-04 SENT] Got it, $80k. Let me also get a few details from you.\nCan you tell me more about this property? Is there a road access? Are utilities available? and are you aware of any easements or restrictions?\n[2026-02-04 RECEIVED] You have only given me your first name. I dont know if this is a scam or not.\n[2026-02-04 SENT] This is not- our company is Synergy Land Partners. You can also find our website.\n[2026-02-04 RECEIVED] Where are yall from?\n[2026-02-04 SENT] We're based in GA.\n[2026-02-04 RECEIVED] And you are looking for property in Alabama\n[2026-02-04 SENT] Yes\n[2026-02-04 RECEIVED] Ok\n[2026-02-04 SENT] Let me also get a few details from you.\nCan you tell me more about this property? Is there a road access? Are utilities available? and are you aware of any easements or restrictions?\n[2026-02-04 RECEIVED] Located on a main road. No utilities and no restrictions. \nIf you are looking to market this property, I am not interested.  If you want to buy it I maybe.\n[2026-02-04 SENT] Thank you for the information. You're also the sole owner, right?\n[2026-02-04 RECEIVED] Yes\n[2026-02-04 SENT] Got it. Based on our conversation, I'd like to have our manager, Madeleine to give you a call.. When are you available for a quick call? Mornings or afternoons?\n[2026-02-04 RECEIVED] Afternoon\n[2026-02-04 SENT] Perfect. Do you also have an email address just in case?",
+        "body": "MESSAGING HISTORY\n[2026-01-27 SENT] Hello John, do you still own those 20.14 acres in Dickson County? Let's chat about potential options. - Iris\n[2026-01-29 SENT] Hi John, Iris again. When would you prefer to discuss your land in Dickson County? Text if interested.\n[2026-02-06 SENT] Hi John, we're reviewing final deals in Dickson. Can we connect about your 20.14 acres? - Iris\n[2026-02-06 RECEIVED] Have you come up with a number?\n[2026-02-06 RECEIVED] Have you come up with a number?\n[2026-02-06 SENT] Let me get a few details from you so we can build out an offer.\nCan you tell me more about this property? Is there a road access? Are utilities available? and are you aware of any easements or restrictions?\n[2026-02-06 RECEIVED] Yes, there is utilities, water gas, electric high-speed Internet there are no easements or restrictions\n[2026-02-06 RECEIVED] I have been made an offer of 180,000 for this property. If you can't beat that please don't waste my time or yours.\n[2026-02-06 SENT] Thank you for the information. You're also the sole owner, right?\n[2026-02-06 RECEIVED] Yes\n[2026-02-06 SENT] Got it. Based on our conversation, I'd like to have our manager, Madeleine to give you a call. When are you available for a quick call? Mornings or afternoons?\n[2026-02-06 RECEIVED] Right now would be fine\n[2026-02-06 RECEIVED] I get a lot of spam calls so if I don't answer, keep trying\n[2026-02-06 SENT] Sure. I'll let my manager know. Do you have an email address just in case?",
         "source": "Zapier",
         "subject": "Smarter Contact - New Lead Push"
       },
       {
-        "date": "2026-02-04",
+        "date": "2026-02-06",
         "author": "Iris Dymphna Samson",
-        "body": "Lead Name: Jean\n Multiple parcels? Just the 16.5 acres \n Confirm acreage(s):  16.5 acres \n Road Access: Yes \u2014 located on a main road\n Structures: None mentioned\n Have made any improvements: Not mentioned\n Utilities: None\n Easements or Restrictions: No restrictions mentioned\n Listed with a realtor: No \n Decision Makers: Appears to be sole owner (confirmed)\n Timeline: Not specified \u2014 open to selling if cash offer\n Price Objective: $80,000 cash for 16.5 acres (needs clarification if price applies only to partial acreage)\n Confirm phone number: +12519785401\n Email: No\nOther Important Notes:\nInitially skeptical and asked if this was a scam due to only first name provided.\nClarified company name (Synergy Land Partners) and location (GA).\nSeller only interested in selling (not listing/marketing).\nRequested cash offer only.\nAgreed to manager call but later declined interest.\nEffort Signals:\nDid the contact respond the same day (text)? Yes\nDid the contact call you back (cold call)? No\nDid the contact happily engage in conversation? Some engagement but cautious/guarded\nDid the contact show a personal tone or humor in communication? No \u2014 mostly direct and cautious\nDid the call last 5+ minutes? N/A (text conversation only)"
+        "body": "Lead Name: John \nMultiple parcels?: No (single property discussed)\nConfirm acreage(s): 20.14 acres\nRoad Access: Yes\nStructures: None mentioned\nHave made any improvements: Not mentioned\nUtilities:\nWater\nGas\nElectric\nHigh-speed internet\nEasements or Restrictions: None\nListed with a realtor: No\nDecision Makers:\nSole owner (confirmed)\nTimeline:\nOpen to immediate discussion\nAvailable \u201cright now\u201d for a call\nPrice Objective:\nHas an existing offer of $180,000\nExplicitly stated we must beat this number to proceed\nConfirm phone number: Yes (prefers calls but notes frequent spam; advised to keep trying if no answer) +16157191400\nEmail: John Jones 7175@iCloud.com\nOther Important Notes:\nRequested manager involvement; okay with Madeleine calling\nAsked for email \u201cjust in case\u201d\nStrong boundary on pricing \u2014 direct and time-conscious\nEffort Signals\nResponded same day: \u2705 Yes\nCall back / availability: \u2705 Offered immediate availability\nEngagement tone: Neutral but direct (firm on price expectations)\nPersonal tone or humor: \u274c No\nCall length 5+ minutes: \u274c Not yet (call pending)"
       }
     ],
     "tasks": [
       {
-        "name": "Day 1 - Qualify - Triple Dial - Afternoon / Evening",
-        "due": "2026-02-04",
+        "name": "Day 1 - Qualify - Triple Dial - Morning",
+        "due": "2026-02-06",
         "completed": false,
         "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-04",
+        "last_updated": "2026-02-06",
         "last_updated_by": "Follow Up Boss"
       },
       {
-        "name": "Day 1 - Qualify - Triple Dial - Morning",
-        "due": "2026-02-04",
+        "name": "Day 1 - Qualify - Triple Dial - Afternoon / Evening",
+        "due": "2026-02-06",
         "completed": false,
         "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-04",
+        "last_updated": "2026-02-06",
         "last_updated_by": "Follow Up Boss"
       },
       {
         "name": "Day 2 - Qualify - Triple Dial - Afternoon / Evening",
-        "due": "2026-02-05",
+        "due": "2026-02-07",
         "completed": false,
         "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-05",
+        "last_updated": "2026-02-07",
         "last_updated_by": "Follow Up Boss"
       },
       {
         "name": "Day 2 - Qualify - Triple Dial - Morning",
-        "due": "2026-02-05",
+        "due": "2026-02-07",
         "completed": false,
         "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-05",
+        "last_updated": "2026-02-07",
         "last_updated_by": "Follow Up Boss"
       }
     ],
@@ -580,120 +496,6 @@
       "inbound_calls": 0,
       "connected_calls": 0,
       "unanswered_attempts": 0,
-      "last_note_date": "2026-02-04",
-      "total_texts": 0,
-      "outbound_texts": 0,
-      "inbound_texts": 0
-    }
-  },
-  {
-    "person_id": 572455,
-    "fetched_at": "2026-02-06T09:15:38.698040",
-    "lead_info": {
-      "name": "Dianne Stallings",
-      "stage": "ACQ - Qualified",
-      "assigned_to": "Madeleine Penales",
-      "source": "Land Data Import",
-      "created": "2026-01-26",
-      "last_activity": "2026-02-06",
-      "tags": [
-        "Campaign 1",
-        "ReadyMode",
-        "ReadyMode - 02/03/2026 11:05:03"
-      ],
-      "phones": [
-        "3344695204"
-      ]
-    },
-    "market_values": {
-      "county_value": 334580.0,
-      "li_comp_value": 88264.0
-    },
-    "property_info": {
-      "county": "Covington",
-      "state": "AL",
-      "acreage": 42.0,
-      "road_frontage": 2776.0,
-      "li_confidence": 79
-    },
-    "notes": [
-      {
-        "date": "2026-02-03",
-        "author": "Travis Rogers",
-        "body": "Lead Name: Dianne Stallings\nMultiple parcels?: 1\nConfirm acreage(s): Only want to sell 32 acres with the house, she will keep the remaining acres\nRoad Access: Gravel and Dirt\nStructures: House\nHave made any improvements: New roof, windows, tubs, etc..\nUtilities: Water, Electricity, Well\nEasements or Restrictions: None\nListed with a realtor: No\nDecision Makers: Only her and her daughter\nTimeline: ASAP\nPrice Objective: $500,000\nConfirm phone number: (334) 469-5204\nEmail: -\nOther Important Notes: Can call mostly anytime, she already have a buyer but she cannot give the money so she is open to offers now\nEffort signals:\nDid the contact respond same day (text)? Did the contact call you back (cold call)? NA\nDid the contact happily engage in conversation? Yes\nDid the contact show a personal tone or humor in the communication? Yes\nDid the call last 5+ minutes? Yes",
-        "subject": "Readymode Note - Feb 3, 2026 11:05am"
-      },
-      {
-        "date": "2026-02-06",
-        "author": "Travis Rogers",
-        "body": "@Madeleine Penales I'm not interested in this one unless the price is good, like below $400k. I don't see easy subdivide potential because of the creek at the front of the lot and the other cut out that's already there with a house on it."
-      }
-    ],
-    "calls": {
-      "unanswered_attempts": [
-        {
-          "date": "2026-02-03",
-          "by": "Madeleine Penales"
-        },
-        {
-          "date": "2026-02-04",
-          "by": "Madeleine Penales",
-          "count": 2
-        }
-      ],
-      "connected_calls": [
-        {
-          "date": "2026-02-05",
-          "by": "Madeleine Penales",
-          "duration_sec": 0,
-          "direction": "inbound",
-          "outcome": "No Answer"
-        }
-      ]
-    },
-    "tasks": [
-      {
-        "name": "Day 1 - Qualify - Triple Dial - Afternoon / Evening",
-        "due": "2026-02-03",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-03",
-        "last_updated_by": "Follow Up Boss"
-      },
-      {
-        "name": "Day 1 - Qualify - Triple Dial - Morning",
-        "due": "2026-02-03",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-03",
-        "last_updated_by": "Follow Up Boss"
-      },
-      {
-        "name": "Day 2 - Qualify - Triple Dial - Afternoon / Evening",
-        "due": "2026-02-04",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-04",
-        "last_updated_by": "Follow Up Boss"
-      },
-      {
-        "name": "Day 2 - Qualify - Triple Dial - Morning",
-        "due": "2026-02-04",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-04",
-        "last_updated_by": "Follow Up Boss"
-      }
-    ],
-    "summary": {
-      "total_notes": 2,
-      "total_calls": 4,
-      "total_talk_time_seconds": 0,
-      "outbound_calls": 3,
-      "inbound_calls": 1,
-      "connected_calls": 1,
-      "unanswered_attempts": 3,
-      "last_call_date": "2026-02-05",
       "last_note_date": "2026-02-06",
       "total_texts": 0,
       "outbound_texts": 0,
@@ -702,7 +504,7 @@
   },
   {
     "person_id": 570964,
-    "fetched_at": "2026-02-06T09:15:49.107055",
+    "fetched_at": "2026-02-09T09:15:17.355393",
     "lead_info": {
       "name": "Vince Hicks",
       "stage": "ACQ - Qualified",
@@ -795,7 +597,7 @@
   },
   {
     "person_id": 567286,
-    "fetched_at": "2026-02-06T09:15:59.568481",
+    "fetched_at": "2026-02-09T09:15:27.794928",
     "lead_info": {
       "name": "Melburn Marsh",
       "stage": "ACQ - Qualified",
@@ -931,153 +733,8 @@
     }
   },
   {
-    "person_id": 565824,
-    "fetched_at": "2026-02-06T09:16:10.009844",
-    "lead_info": {
-      "name": "Richard Jones",
-      "stage": "ACQ - Qualified",
-      "assigned_to": "Madeleine Penales",
-      "source": "Land Data Import",
-      "created": "2026-01-26",
-      "last_activity": "2026-02-06",
-      "tags": [
-        "Dante Hernandez",
-        "SC - Qualified",
-        "Smarter Contact"
-      ],
-      "phones": [
-        "2565908459",
-        "2567275630",
-        "2568411511"
-      ]
-    },
-    "market_values": {
-      "county_value": 30500.0,
-      "li_comp_value": 191361.0
-    },
-    "property_info": {
-      "county": "Cullman",
-      "state": "AL",
-      "acreage": 2.7,
-      "road_frontage": 0.0,
-      "li_confidence": 91
-    },
-    "notes": [
-      {
-        "date": "2026-01-26",
-        "author": "Travis Rogers",
-        "body": "MESSAGING HISTORY\n[2026-01-26 SENT] Hi Richard, just reaching out to explore the selling potential of your 2.7 acres in Cullman County. Interested? - Iris\n[2026-01-26 RECEIVED] Yes, it's for sale\n[2026-01-26 SENT] Let me get a few details from you so we can build out an offer.\nCan you tell me more about this property? Is there a road access? Are utilities available? and are you aware of any easements or restrictions?\n[2026-01-26 RECEIVED] 2.7 acres it's grown up. It's got trees on it. It doesn't have a driveway. You can put one, but it doesn't have one. It's off of battleground and 157 towards West Point\n[2026-01-26 SENT] Thank you for the information. You're also the sole owner, right?\n[2026-01-26 RECEIVED] It belongs to my ex-husband. I have the date on it. He lives in my yard. He has early stages of dementia me and our son. His son takes care of him so his son would handle everything but everybody's got my number. I do everything for him because our son works\n[2026-01-26 SENT] I'm also curious, I know you're asking for an offer but we want to make sure that we can meet your goals and expectations about the price. Do you have a price in mind for this tract?\n[2026-01-26 RECEIVED] I do not, but you're more than welcome to make an offer and I can forward it to our son",
-        "source": "Zapier",
-        "subject": "Smarter Contact - New Lead Push"
-      },
-      {
-        "date": "2026-01-26",
-        "author": "Travis Rogers",
-        "body": "MESSAGING HISTORY\n[2026-01-26 SENT] Hi Richard, just reaching out to explore the selling potential of your 2.7 acres in Cullman County. Interested? - Iris\n[2026-01-26 RECEIVED] Yes, it's for sale\n[2026-01-26 SENT] Let me get a few details from you so we can build out an offer.\nCan you tell me more about this property? Is there a road access? Are utilities available? and are you aware of any easements or restrictions?\n[2026-01-26 RECEIVED] 2.7 acres it's grown up. It's got trees on it. It doesn't have a driveway. You can put one, but it doesn't have one. It's off of battleground and 157 towards West Point\n[2026-01-26 SENT] Thank you for the information. You're also the sole owner, right?\n[2026-01-26 RECEIVED] It belongs to my ex-husband. I have the date on it. He lives in my yard. He has early stages of dementia me and our son. His son takes care of him so his son would handle everything but everybody's got my number. I do everything for him because our son works\n[2026-01-26 SENT] I'm also curious, I know you're asking for an offer but we want to make sure that we can meet your goals and expectations about the price. Do you have a price in mind for this tract?\n[2026-01-26 RECEIVED] I do not, but you're more than welcome to make an offer and I can forward it to our son\n[2026-01-26 SENT] It looks like investors in the area are offering between $97,000 and $117,000 for properties like yours. Once our manager reviews your property, we can provide you with a firm offer.\n[2026-01-26 SENT] Based on our conversation, I'd like to have our manager, Madeleine to give you a call to discuss an offer. When are you available for a quick call? Mornings or afternoons?\n[2026-01-26 RECEIVED] Does it matter you'll just have to text and make sure that I know it's you call because you know telemarketers are crazy. They call constantly probably be better about 330 or four. Our son will be home.\n[2026-01-26 SENT] I understand, no problem. Text is fine. Thank you! I appreciate your time. My manager will keep in touch. Have a great day!",
-        "source": "Zapier",
-        "subject": "Smarter Contact - New Lead Push"
-      },
-      {
-        "date": "2026-01-26",
-        "author": "Iris Dymphna Samson",
-        "body": "Lead Name: Richard (Property owned by ex-husband; son involved in decisions)\nMultiple Parcels?\nNo \u2013 single parcel discussed\nConfirm Acreage(s):\n2.7 acres\nRoad Access:\nNo existing driveway\nProperty is off Battleground Rd & Hwy 157 toward West Point\nDriveway can be added\nStructures:\nNone mentioned (raw land)\nHave Made Any Improvements:\nNone mentioned\nUtilities:\nNot confirmed (TBD)\nEasements or Restrictions:\nNot disclosed (TBD)\nListed with a Realtor:\nNo\nDecision Makers:\nSon handles decisions\nEx-husband is legal owner (early stages of dementia)\nLead assists with communication\nTimeline:\nNot specified, but open to offers\nPrice Objective:\nNo price given\nOpen to reviewing an offer\nConfirm Phone Number:\nConfirmed (text preferred)\nEmail:\nNot provided\nOther Important Notes:\nProperty is grown up with trees\nNo driveway currently\nSeller prefers text communication due to frequent telemarketer calls\nBest time to call: around 3:30\u20134:00 PM, when son is home\nManager (Madeleine) to follow up with a call\nInvestors in the area estimated between $97K\u2013$117K (not yet a firm offer)- I offered\nEffort Signals\nSame-day response: \u2705 Yes (text)\nCall back: \u274c No (prefers text)\nEngaged in conversation: \u2705 Yes\nPersonal tone: \u2705 Yes (shared family situation)\nCall 5+ minutes: \u274c No call yet"
-      },
-      {
-        "date": "2026-02-06",
-        "author": "Travis Rogers",
-        "body": "@Madeleine Penales definitely ask about deeded access for this one. There may be deeded access to the road to the west, which would be good because that's not very far. Get a sense for motivation and see if they've thought about the pricing that Iris softballed out. I would start from there. It looks like their son handles decisions, so I find that's often a person that's gonna come in and say no. Any discussions you have early on, make sure she runs it by her son."
-      }
-    ],
-    "calls": {
-      "unanswered_attempts": [
-        {
-          "date": "2026-02-05",
-          "by": "Madeleine Penales"
-        }
-      ]
-    },
-    "text_messages": [
-      {
-        "date": "2026-02-03",
-        "direction": "outbound",
-        "by": "Madeleine Penales"
-      },
-      {
-        "date": "2026-02-05",
-        "direction": "outbound",
-        "by": "Madeleine Penales"
-      }
-    ],
-    "tasks": [
-      {
-        "name": "Day 1 - Qualify - Triple Dial - Afternoon / Evening",
-        "due": "2026-01-26",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-05",
-        "last_updated_by": "Travis Dispo"
-      },
-      {
-        "name": "Day 1 - Qualify - Triple Dial - Morning",
-        "due": "2026-01-26",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-05",
-        "last_updated_by": "Travis Dispo"
-      },
-      {
-        "name": "Day 1 - Qualify - Triple Dial - Afternoon / Evening",
-        "due": "2026-01-26",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-05",
-        "last_updated_by": "Travis Dispo"
-      },
-      {
-        "name": "Day 1 - Qualify - Triple Dial - Morning",
-        "due": "2026-01-26",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-05",
-        "last_updated_by": "Travis Dispo"
-      },
-      {
-        "name": "Day 2 - Qualify - Triple Dial - Afternoon / Evening",
-        "due": "2026-01-27",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-05",
-        "last_updated_by": "Travis Dispo"
-      },
-      {
-        "name": "Day 2 - Qualify - Triple Dial - Morning",
-        "due": "2026-01-27",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-05",
-        "last_updated_by": "Travis Dispo"
-      }
-    ],
-    "summary": {
-      "total_notes": 4,
-      "total_calls": 1,
-      "total_talk_time_seconds": 0,
-      "outbound_calls": 1,
-      "inbound_calls": 0,
-      "connected_calls": 0,
-      "unanswered_attempts": 1,
-      "last_call_date": "2026-02-05",
-      "last_note_date": "2026-02-06",
-      "total_texts": 2,
-      "outbound_texts": 2,
-      "inbound_texts": 0,
-      "text_response_rate": 0,
-      "last_text_date": "2026-02-05"
-    }
-  },
-  {
     "person_id": 564994,
-    "fetched_at": "2026-02-06T09:16:20.475865",
+    "fetched_at": "2026-02-09T09:15:38.203364",
     "lead_info": {
       "name": "John Beaty",
       "stage": "ACQ - Qualified",
@@ -1179,14 +836,14 @@
   },
   {
     "person_id": 564393,
-    "fetched_at": "2026-02-06T09:16:30.942702",
+    "fetched_at": "2026-02-09T09:15:48.616199",
     "lead_info": {
       "name": "Gloria Presley",
       "stage": "ACQ - Qualified",
       "assigned_to": "Madeleine Penales",
       "source": "Land Data Import",
       "created": "2026-01-26",
-      "last_activity": "2026-02-05",
+      "last_activity": "2026-02-06",
       "tags": [
         "SC - Qualified",
         "Smarter Contact"
@@ -1238,6 +895,22 @@
         "assigned_to": "Madeleine Penales",
         "last_updated": "2026-02-05",
         "last_updated_by": "Follow Up Boss"
+      },
+      {
+        "name": "Day 2 - Qualify - Triple Dial - Afternoon / Evening",
+        "due": "2026-02-06",
+        "completed": false,
+        "assigned_to": "Madeleine Penales",
+        "last_updated": "2026-02-06",
+        "last_updated_by": "Follow Up Boss"
+      },
+      {
+        "name": "Day 2 - Qualify - Triple Dial - Morning",
+        "due": "2026-02-06",
+        "completed": false,
+        "assigned_to": "Madeleine Penales",
+        "last_updated": "2026-02-06",
+        "last_updated_by": "Follow Up Boss"
       }
     ],
     "summary": {
@@ -1256,7 +929,7 @@
   },
   {
     "person_id": 557272,
-    "fetched_at": "2026-02-06T09:16:41.418457",
+    "fetched_at": "2026-02-09T09:15:59.036651",
     "lead_info": {
       "name": "James Scruggs",
       "stage": "ACQ - Qualified",
@@ -1363,251 +1036,81 @@
     }
   },
   {
-    "person_id": 554560,
-    "fetched_at": "2026-02-06T09:16:51.846188",
+    "person_id": 552981,
+    "fetched_at": "2026-02-09T09:16:09.473835",
     "lead_info": {
-      "name": "Jerry Epperson",
+      "name": "Sarah Cavender",
       "stage": "ACQ - Qualified",
       "assigned_to": "Madeleine Penales",
       "source": "Land Data Import",
       "created": "2026-01-19",
-      "last_activity": "2026-02-06",
+      "last_activity": "2026-02-07",
       "tags": [
         "Campaign 1",
         "ReadyMode",
-        "ReadyMode - 02/04/2026 10:54:44"
+        "ReadyMode - 02/06/2026 10:58:14"
       ],
       "phones": [
-        "4234895347",
-        "4236260250",
-        "4236264025"
+        "2564542384",
+        "2562363734",
+        "2564545225"
       ]
     },
     "market_values": {
-      "county_value": 312200.0,
-      "li_comp_value": 142488.0
+      "county_value": 92880.0,
+      "li_comp_value": 158751.0
     },
     "property_info": {
-      "county": "Claiborne",
-      "state": "TN",
-      "acreage": 40.2,
-      "road_frontage": 2438.0,
-      "li_confidence": 95
+      "county": "Cleburne",
+      "state": "AL",
+      "acreage": 42.0,
+      "road_frontage": 621.0,
+      "li_confidence": 91
     },
     "notes": [
-      {
-        "date": "2026-02-04",
-        "author": "Travis Rogers",
-        "body": "Lead Name: Jerry Epperson\nProperty Addres: HIGHWAY 25E S, TAZEWELL, TN 37879\nLI: https://app.landinsights.co/data?parcel=122187136#15.43/36.406788/-83.49281\nMultiple parcels?: 1\nConfirm acreage(s): 42\nRoad Access: Paved\nStructures: None\nHave made any improvements: No\nUtilities: None\nEasements or Restrictions: None\nListed with a realtor: No\nDecision Makers: Him and his wife\nTimeline: Within this week\nPrice Objective: $200,000\nConfirm phone number: (423) 489-5347\nEmail: -\nOther Important Notes: Can call anytime, he wants to sell it within this week and he is pertaining to a different property.\nEffort signals:\nDid the contact respond same day (text)? Did the contact call you back (cold call)? Yes\nDid the contact happily engage in conversation? Yes\nDid the contact show a personal tone or humor in the communication? Yes\nDid the call last 5+ minutes? Yes",
-        "subject": "Readymode Note - Feb 4, 2026 10:54am"
-      },
       {
         "date": "2026-02-06",
         "author": "Travis Rogers",
-        "body": "@Madeleine Penales this lead looks motivated/urgent. Connect with him and get an understanding of their timing and urgency. \n\nMay not be a candidate for a 120-day close due to the notes mention of urgency. If he's open to waiting, I think we can do a MAO of $185k.\n\nIf he wants us to buy it quickly MAO is going to be $151k and need 45 days DD."
+        "body": "Lead Name:  Sarah Cavender\nMultiple parcels?: 3\nTotal acres:  123 acres\nRoad Access:   COUNTY ROAD25\nStructures:  there used to be a house\nUtilities:  water and power line on the road\nRestrictions & Easement:  not allowed to build an energy constructions like windmills etc.\nListed with a realtor:  no\nDecision Makers:  sole owner\nTimeline:  \nPrice Objective:  $400,000\nConfirm phone number:  (256) 454-2384\nEmail:   \nAdditional Notes:  lead has 3 adjacent properties in total that she'd consider selling. She isn't in a rush in selling but she has no plans on keeping the property. \nEffort signals:   \nDid the contact respond same day (text)? Did the contact call you back (cold call)? no\nDid the contact happily engage in conversation?: yes\nDid the contact show a personal tone or humor in the communication?: yes\nDid the call last 5+ minutes? yes",
+        "subject": "Readymode Note - Feb 6, 2026 10:58am"
       }
     ],
     "tasks": [
       {
         "name": "Day 1 - Qualify - Triple Dial - Afternoon / Evening",
-        "due": "2026-02-04",
+        "due": "2026-02-06",
         "completed": false,
         "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-04",
+        "last_updated": "2026-02-06",
         "last_updated_by": "Follow Up Boss"
       },
       {
         "name": "Day 1 - Qualify - Triple Dial - Morning",
-        "due": "2026-02-04",
+        "due": "2026-02-06",
         "completed": false,
         "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-04",
+        "last_updated": "2026-02-06",
         "last_updated_by": "Follow Up Boss"
       },
       {
         "name": "Day 2 - Qualify - Triple Dial - Afternoon / Evening",
-        "due": "2026-02-05",
+        "due": "2026-02-07",
         "completed": false,
         "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-05",
+        "last_updated": "2026-02-07",
         "last_updated_by": "Follow Up Boss"
       },
       {
         "name": "Day 2 - Qualify - Triple Dial - Morning",
-        "due": "2026-02-05",
+        "due": "2026-02-07",
         "completed": false,
         "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-05",
-        "last_updated_by": "Follow Up Boss"
-      }
-    ],
-    "summary": {
-      "total_notes": 2,
-      "total_calls": 0,
-      "total_talk_time_seconds": 0,
-      "outbound_calls": 0,
-      "inbound_calls": 0,
-      "connected_calls": 0,
-      "unanswered_attempts": 0,
-      "last_note_date": "2026-02-06",
-      "total_texts": 0,
-      "outbound_texts": 0,
-      "inbound_texts": 0
-    }
-  },
-  {
-    "person_id": 553863,
-    "fetched_at": "2026-02-06T09:17:02.315749",
-    "lead_info": {
-      "name": "Harry Oates",
-      "stage": "ACQ - Qualified",
-      "assigned_to": "Madeleine Penales",
-      "source": "Land Data Import",
-      "created": "2026-01-19",
-      "last_activity": "2026-02-05",
-      "tags": [
-        "Campaign 1",
-        "ReadyMode",
-        "ReadyMode - 02/04/2026 11:04:50"
-      ],
-      "phones": [
-        "3347978515",
-        "3343472401",
-        "3343473559"
-      ]
-    },
-    "market_values": {
-      "county_value": 117640.0,
-      "li_comp_value": 136727.0
-    },
-    "property_info": {
-      "county": "Coffee",
-      "state": "AL",
-      "acreage": 37.0,
-      "road_frontage": 1260.0,
-      "li_confidence": 81
-    },
-    "notes": [
-      {
-        "date": "2026-02-04",
-        "author": "Travis Rogers",
-        "body": "Lead Name:  Harry Oates\nMultiple parcels?: 1\nTotal acres:  37 acres\nRoad Access:   COUNTY ROAD 610\nStructures:  2 barnes\nUtilities:  has water, septic, and electricity\nRestrictions & Easement:  no mobile homes\nListed with a realtor:  no\nDecision Makers:  sole owner\nTimeline:  \nPrice Objective:  $250,000\nConfirm phone number:  (334) 797-8515\nEmail:   \nAdditional Notes:  lead haven't thought much about selling and don't have a price range in mind but would consider a good offer. provided %50 emv and said it's too low and it's the cost when he bought the land. He is thinking of around 250k price range would be a good offer. available for a callback anytime\nEffort signals:   \nDid the contact respond same day (text)? Did the contact call you back (cold call)? no\nDid the contact happily engage in conversation?: yes\nDid the contact show a personal tone or humor in the communication?: yes\nDid the call last 5+ minutes? yes",
-        "subject": "Readymode Note - Feb 4, 2026 11:04am"
-      }
-    ],
-    "tasks": [
-      {
-        "name": "Day 1 - Qualify - Triple Dial - Afternoon / Evening",
-        "due": "2026-02-04",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-04",
-        "last_updated_by": "Follow Up Boss"
-      },
-      {
-        "name": "Day 1 - Qualify - Triple Dial - Morning",
-        "due": "2026-02-04",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-04",
-        "last_updated_by": "Follow Up Boss"
-      },
-      {
-        "name": "Day 2 - Qualify - Triple Dial - Morning",
-        "due": "2026-02-05",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-05",
-        "last_updated_by": "Follow Up Boss"
-      },
-      {
-        "name": "Day 2 - Qualify - Triple Dial - Afternoon / Evening",
-        "due": "2026-02-05",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-05",
+        "last_updated": "2026-02-07",
         "last_updated_by": "Follow Up Boss"
       }
     ],
     "summary": {
       "total_notes": 1,
-      "total_calls": 0,
-      "total_talk_time_seconds": 0,
-      "outbound_calls": 0,
-      "inbound_calls": 0,
-      "connected_calls": 0,
-      "unanswered_attempts": 0,
-      "last_note_date": "2026-02-04",
-      "total_texts": 0,
-      "outbound_texts": 0,
-      "inbound_texts": 0
-    }
-  },
-  {
-    "person_id": 553658,
-    "fetched_at": "2026-02-06T09:17:12.760677",
-    "lead_info": {
-      "name": "Jacob Maples",
-      "stage": "ACQ - Qualified",
-      "assigned_to": "Madeleine Penales",
-      "source": "Land Data Import",
-      "created": "2026-01-19",
-      "last_activity": "2026-02-06",
-      "tags": [
-        "Campaign 1",
-        "ReadyMode",
-        "ReadyMode - 02/05/2026 10:19:51"
-      ],
-      "phones": [
-        "8658039126",
-        "4235570883",
-        "8652781378"
-      ]
-    },
-    "market_values": {
-      "county_value": 160500.0,
-      "li_comp_value": 155554.0
-    },
-    "property_info": {
-      "county": "Claiborne",
-      "state": "TN",
-      "acreage": 74.3,
-      "road_frontage": 998.0,
-      "li_confidence": 93
-    },
-    "notes": [
-      {
-        "date": "2026-02-05",
-        "author": "Travis Rogers",
-        "body": "lead name: Jacob Maples\nmultiple parcel?: no\nconfirm acreages: 74.3\nroad access: Earl Maples Ln\nstructures: barn\nimprovements: yes\nutilities: available\neasements and restrictions: none of his aware of\nlisted with a realtor: no\ndecision maker: himself\ntimeline: none, its clear to sell\nprice objectives: $200k\nconfirm phone number: (865) 803-9126\nemail address: none\nimportant notes; easy to talk with and the price is provided by the lead.",
-        "subject": "Readymode Note - Feb 5, 2026 10:19am"
-      },
-      {
-        "date": "2026-02-06",
-        "author": "Travis Rogers",
-        "body": "@Madeleine Penales this is a tough comp. There aren't that many sold comps this large in the county. I think there could be something here. There's a for sale comp that looks fairly similar listed for $4,000 an acre, and it seems to be getting good attention. \n\nSee what kind of motivation he has. I think we can start the offer around $180k. MAO of $193k."
-      }
-    ],
-    "tasks": [
-      {
-        "name": "Day 1 - Qualify - Triple Dial - Afternoon / Evening",
-        "due": "2026-02-05",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-05",
-        "last_updated_by": "Follow Up Boss"
-      },
-      {
-        "name": "Day 1 - Qualify - Triple Dial - Morning",
-        "due": "2026-02-05",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-05",
-        "last_updated_by": "Follow Up Boss"
-      }
-    ],
-    "summary": {
-      "total_notes": 2,
       "total_calls": 0,
       "total_talk_time_seconds": 0,
       "outbound_calls": 0,
@@ -1622,14 +1125,14 @@
   },
   {
     "person_id": 550098,
-    "fetched_at": "2026-02-06T09:17:23.176755",
+    "fetched_at": "2026-02-09T09:16:19.975347",
     "lead_info": {
       "name": "Lawrence Presnell",
       "stage": "ACQ - Qualified",
       "assigned_to": "Madeleine Penales",
       "source": "Land Data Import",
       "created": "2026-01-19",
-      "last_activity": "2026-02-05",
+      "last_activity": "2026-02-06",
       "tags": [
         "Campaign 1",
         "ReadyMode",
@@ -1660,6 +1163,22 @@
         "subject": "Readymode Note - Feb 4, 2026 11:39am"
       }
     ],
+    "calls": {
+      "unanswered_attempts": [
+        {
+          "date": "2026-02-06",
+          "by": "Madeleine Penales",
+          "count": 2
+        }
+      ]
+    },
+    "text_messages": [
+      {
+        "date": "2026-02-06",
+        "direction": "outbound",
+        "by": "Madeleine Penales"
+      }
+    ],
     "tasks": [
       {
         "name": "Day 1 - Qualify - Triple Dial - Morning",
@@ -1696,21 +1215,24 @@
     ],
     "summary": {
       "total_notes": 1,
-      "total_calls": 0,
+      "total_calls": 2,
       "total_talk_time_seconds": 0,
-      "outbound_calls": 0,
+      "outbound_calls": 2,
       "inbound_calls": 0,
       "connected_calls": 0,
-      "unanswered_attempts": 0,
+      "unanswered_attempts": 2,
+      "last_call_date": "2026-02-06",
       "last_note_date": "2026-02-04",
-      "total_texts": 0,
-      "outbound_texts": 0,
-      "inbound_texts": 0
+      "total_texts": 1,
+      "outbound_texts": 1,
+      "inbound_texts": 0,
+      "text_response_rate": 0,
+      "last_text_date": "2026-02-06"
     }
   },
   {
     "person_id": 548704,
-    "fetched_at": "2026-02-06T09:17:33.623729",
+    "fetched_at": "2026-02-09T09:16:30.420665",
     "lead_info": {
       "name": "Colleen Phoebus",
       "stage": "ACQ - Qualified",
@@ -1807,355 +1329,8 @@
     }
   },
   {
-    "person_id": 528746,
-    "fetched_at": "2026-02-06T09:17:44.111685",
-    "lead_info": {
-      "name": "Richard Dittmer",
-      "stage": "ACQ - Qualified",
-      "assigned_to": "Madeleine Penales",
-      "source": "Land Data Import",
-      "created": "2025-12-29",
-      "last_activity": "2026-02-05",
-      "tags": [
-        "Campaign 1",
-        "ReadyMode",
-        "ReadyMode - 02/02/2026 11:56:56"
-      ],
-      "phones": [
-        "5403411929",
-        "5403494989"
-      ]
-    },
-    "market_values": {
-      "county_value": 187500.0,
-      "li_comp_value": 180956.0
-    },
-    "property_info": {
-      "county": "Rappahannock",
-      "state": "VA",
-      "acreage": 25.0,
-      "road_frontage": 3295.0,
-      "li_confidence": 95
-    },
-    "notes": [
-      {
-        "date": "2026-02-02",
-        "author": "Travis Rogers",
-        "body": "Lead Name: Richard Dittmer\nMultiple parcels?: 1\nConfirm acreage(s): 25\nRoad Access: Gravel\nStructures: None\nHave made any improvements: No\nUtilities: Well, Electricity\nEasements or Restrictions: None\nListed with a realtor: No\nDecision Makers: Only him\nTimeline: No specific timeline\nPrice Objective: I mentioned $90,000 - $100,000, he doesn\u2019t have estimate amount in mind, he is planning to talk to a realtor for the value\nConfirm phone number: (540) 341-1929\nEmail: -\nOther Important Notes: Can call anytime\nEffort signals:\nDid the contact respond same day (text)? Did the contact call you back (cold call)? No\nDid the contact happily engage in conversation? Yes\nDid the contact show a personal tone or humor in the communication? Yes\nDid the call last 5+ minutes? Yes",
-        "subject": "Readymode Note - Feb 2, 2026 11:56am"
-      }
-    ],
-    "calls": {
-      "unanswered_attempts": [
-        {
-          "date": "2026-02-05",
-          "by": "Madeleine Penales",
-          "count": 2
-        }
-      ]
-    },
-    "text_messages": [
-      {
-        "date": "2026-02-03",
-        "direction": "outbound",
-        "by": "Madeleine Penales",
-        "delivery_failed": true
-      }
-    ],
-    "tasks": [
-      {
-        "name": "Day 1 - Qualify - Triple Dial - Afternoon / Evening",
-        "due": "2026-02-02",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-02",
-        "last_updated_by": "Follow Up Boss"
-      },
-      {
-        "name": "Day 1 - Qualify - Triple Dial - Morning",
-        "due": "2026-02-02",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-02",
-        "last_updated_by": "Follow Up Boss"
-      },
-      {
-        "name": "Day 2 - Qualify - Triple Dial - Afternoon / Evening",
-        "due": "2026-02-03",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-03",
-        "last_updated_by": "Follow Up Boss"
-      },
-      {
-        "name": "Day 2 - Qualify - Triple Dial - Morning",
-        "due": "2026-02-03",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-03",
-        "last_updated_by": "Follow Up Boss"
-      }
-    ],
-    "summary": {
-      "total_notes": 1,
-      "total_calls": 2,
-      "total_talk_time_seconds": 0,
-      "outbound_calls": 2,
-      "inbound_calls": 0,
-      "connected_calls": 0,
-      "unanswered_attempts": 2,
-      "last_call_date": "2026-02-05",
-      "last_note_date": "2026-02-02",
-      "total_texts": 1,
-      "outbound_texts": 1,
-      "inbound_texts": 0,
-      "text_response_rate": 0,
-      "last_text_date": "2026-02-03"
-    }
-  },
-  {
-    "person_id": 404115,
-    "fetched_at": "2026-02-06T09:17:54.568423",
-    "lead_info": {
-      "name": "Robert Albritten",
-      "stage": "ACQ - Qualified",
-      "assigned_to": "Madeleine Penales",
-      "source": "Land Data Import",
-      "created": "2025-10-21",
-      "last_activity": "2026-02-06",
-      "tags": [
-        "Campaign 1",
-        "Dante Hernandez",
-        "PRIORITY",
-        "ReadyMode",
-        "ReadyMode - 01/28/2026 16:12:23"
-      ],
-      "phones": [
-        "2293473391",
-        "2294391411",
-        "2299952401"
-      ]
-    },
-    "market_values": {
-      "county_value": 96407.0,
-      "li_comp_value": 699664.0
-    },
-    "property_info": {
-      "county": "Terrell",
-      "state": "GA",
-      "acreage": 84.17,
-      "road_frontage": 4101.0,
-      "li_confidence": 57
-    },
-    "notes": [
-      {
-        "date": "2026-01-28",
-        "author": "Travis Rogers",
-        "body": "Lead Name:  Robert Albritten\nMultiple parcels?: 1\nTotal acres:  84.17\nRoad Access:   HATTIE ALBRITTEN RD\nStructures:  no\nUtilities:  has water, septic, and electricity\nRestrictions & Easement:  no\nListed with a realtor:  no\nDecision Makers:  sole owner\nTimeline:  \nPrice Objective:  $225,000\nConfirm phone number:  (229) 347-3391\nEmail:   \nAdditional Notes:  Lead has other properties that he might consider selling as well. available for a call anytime\nEffort signals:   \nDid the contact respond same day (text)? Did the contact call you back (cold call)? no\nDid the contact happily engage in conversation?: yes\nDid the contact show a personal tone or humor in the communication?: yes\nDid the call last 5+ minutes? yes",
-        "subject": "Readymode Note - Jan 28, 2026 4:12pm"
-      },
-      {
-        "date": "2026-02-02",
-        "author": "Madeleine Penales",
-        "body": "Ask me to callback after 2PM"
-      },
-      {
-        "date": "2026-02-04",
-        "author": "Madeleine Penales",
-        "body": "Wanted to be called during MORNING"
-      },
-      {
-        "date": "2026-02-06",
-        "author": "Travis Rogers",
-        "body": "@Madeleine Penales high Priority - $225k looks like a pretty reasonable asking price in this area. Note the Land Insights comp is definitely not correct - this is not worth $700,000. \n\nAsk him questions about his motivation. Ask about timber. Sounds like he's got other properties he's interested in selling as well."
-      }
-    ],
-    "calls": {
-      "unanswered_attempts": [
-        {
-          "date": "2026-02-02",
-          "by": "Madeleine Penales"
-        },
-        {
-          "date": "2026-02-04",
-          "by": "Madeleine Penales"
-        }
-      ]
-    },
-    "text_messages": [
-      {
-        "date": "2026-02-03",
-        "direction": "outbound",
-        "by": "Madeleine Penales"
-      }
-    ],
-    "tasks": [
-      {
-        "name": "Day 1 - Qualify - Triple Dial - Morning",
-        "due": "2026-01-28",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-05",
-        "last_updated_by": "Travis Dispo"
-      },
-      {
-        "name": "Day 1 - Qualify - Triple Dial - Afternoon / Evening",
-        "due": "2026-01-28",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-05",
-        "last_updated_by": "Travis Dispo"
-      },
-      {
-        "name": "Day 2 - Qualify - Triple Dial - Afternoon / Evening",
-        "due": "2026-01-29",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-05",
-        "last_updated_by": "Travis Dispo"
-      },
-      {
-        "name": "Day 2 - Qualify - Triple Dial - Morning",
-        "due": "2026-01-29",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-05",
-        "last_updated_by": "Travis Dispo"
-      }
-    ],
-    "summary": {
-      "total_notes": 4,
-      "total_calls": 2,
-      "total_talk_time_seconds": 0,
-      "outbound_calls": 2,
-      "inbound_calls": 0,
-      "connected_calls": 0,
-      "unanswered_attempts": 2,
-      "last_call_date": "2026-02-04",
-      "last_note_date": "2026-02-06",
-      "total_texts": 1,
-      "outbound_texts": 1,
-      "inbound_texts": 0,
-      "text_response_rate": 0,
-      "last_text_date": "2026-02-03"
-    }
-  },
-  {
-    "person_id": 264815,
-    "fetched_at": "2026-02-06T09:18:05.120762",
-    "lead_info": {
-      "name": "Michael Lewallen",
-      "stage": "ACQ - Qualified",
-      "assigned_to": "Madeleine Penales",
-      "source": "Import",
-      "created": "2025-08-12",
-      "last_activity": "2026-02-06",
-      "tags": [
-        "Import",
-        "SC - Qualified",
-        "Smarter Contact"
-      ],
-      "phones": [
-        "4239940334",
-        "4232908611",
-        "4238709156"
-      ]
-    },
-    "market_values": {
-      "county_value": 65500.0,
-      "li_comp_value": 76807.0
-    },
-    "property_info": {
-      "county": "Hamilton",
-      "state": "TN",
-      "acreage": 8.22,
-      "road_frontage": 722.0,
-      "li_confidence": 94
-    },
-    "notes": [
-      {
-        "date": "2026-02-04",
-        "author": "Travis Rogers",
-        "body": "MESSAGING HISTORY\n[2026-02-03 SENT] Hi Michael, just reaching out to explore the selling potential of your 8.22 acres in Hamilton County. Interested? - Iris\n[2026-02-03 RECEIVED] yes i am interested in selling it. asking price is $205,000\n[2026-02-03 SENT] Got it, $205K. Let me also get a few details from you.\nCan you tell me more about this property? Is there a road access? Are utilities available? and are you aware of any easements or restrictions?\n[2026-02-03 SENT] Thank you for the information. You're also the sole owner, right?\n[2026-02-03 RECEIVED] yes i am\n[2026-02-03 SENT] Got it. Based on our conversation, I'd like to have our manager, Madeleine to give you a call to discuss an offer. When are you available for a quick call? Mornings or afternoons?\n[2026-02-03 RECEIVED] Any time if i don't answer i will call back\n[2026-02-03 SENT] Perfect. Do you also have an email address just in case?\n[2026-02-04 RECEIVED] No i do not",
-        "source": "Zapier",
-        "subject": "Smarter Contact - New Lead Push"
-      },
-      {
-        "date": "2026-02-04",
-        "author": "Travis Rogers",
-        "body": "MESSAGING HISTORY\n[2026-02-03 SENT] Hi Michael, just reaching out to explore the selling potential of your 8.22 acres in Hamilton County. Interested? - Iris\n[2026-02-03 RECEIVED] yes i am interested in selling it. asking price is $205,000\n[2026-02-03 SENT] Got it, $205K. Let me also get a few details from you.\nCan you tell me more about this property? Is there a road access? Are utilities available? and are you aware of any easements or restrictions?\n[2026-02-03 SENT] Thank you for the information. You're also the sole owner, right?\n[2026-02-03 RECEIVED] yes i am\n[2026-02-03 SENT] Got it. Based on our conversation, I'd like to have our manager, Madeleine to give you a call to discuss an offer. When are you available for a quick call? Mornings or afternoons?\n[2026-02-03 RECEIVED] Any time if i don't answer i will call back\n[2026-02-03 SENT] Perfect. Do you also have an email address just in case?\n[2026-02-04 RECEIVED] No i do not",
-        "source": "Zapier",
-        "subject": "Smarter Contact - New Lead Push"
-      },
-      {
-        "date": "2026-02-04",
-        "author": "Travis Rogers",
-        "body": "MESSAGING HISTORY\n[2026-02-03 SENT] Hi Michael, just reaching out to explore the selling potential of your 8.22 acres in Hamilton County. Interested? - Iris\n[2026-02-03 RECEIVED] yes i am interested in selling it. asking price is $205,000\n[2026-02-03 SENT] Got it, $205K. Let me also get a few details from you.\nCan you tell me more about this property? Is there a road access? Are utilities available? and are you aware of any easements or restrictions?\n[2026-02-03 SENT] Thank you for the information. You're also the sole owner, right?\n[2026-02-03 RECEIVED] yes i am\n[2026-02-03 SENT] Got it. Based on our conversation, I'd like to have our manager, Madeleine to give you a call to discuss an offer. When are you available for a quick call? Mornings or afternoons?\n[2026-02-03 RECEIVED] Any time if i don't answer i will call back\n[2026-02-03 SENT] Perfect. Do you also have an email address just in case?\n[2026-02-04 RECEIVED] No i do not",
-        "source": "Zapier",
-        "subject": "Smarter Contact - New Lead Push"
-      },
-      {
-        "date": "2026-02-04",
-        "author": "Iris Dymphna Samson",
-        "body": "Lead Name: Michael\n Multiple parcels? No\n Confirm acreage(s): 8.22 acres\n Road Access: Driveway access confirmed (utilities and fiber optic run to driveway)\nStructures: None mentioned\n Have made any improvements:\nCleared 3 acres\nMaintained/mowed property for 5 years\nUtilities:\nUtilities available at driveway\nFiber optic available\nWell not yet dug, but surrounding properties have successfully hit water at 250-300 ft\nEasements or Restrictions: Not mentioned\n Listed with a realtor: No\nDecision Makers: Michael (appears to be sole owner - needs final confirmation)\nTimeline: Not specified, but open to selling and taking calls\nPrice Objective: $205,000\nConfirm phone number: (423) 994-0334\n Email: Not provided\nOther Important Notes:\nProperty backs up to 900 acres of State Park (Cumberland Trail)\nDescribed property as \"gorgeous\"\nMentioned surrounding parcels range from 5-25 acres\nInitially said not interested later in conversation thread, but earlier confirmed interest in selling (may need clarification)\nEffort Signals:\nResponded same day: Yes\nWilling to engage in conversation: Yes\nPersonal tone/humor: Yes - descriptive and engaged when discussing property features\n5+ minute call: Not confirmed (text conversation only so far)"
-      },
-      {
-        "date": "2026-02-06",
-        "author": "Travis Rogers",
-        "body": "@Madeleine Penales I think this should be PM"
-      }
-    ],
-    "tasks": [
-      {
-        "name": "Day 1 - Qualify - Triple Dial - Afternoon / Evening",
-        "due": "2026-02-04",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-04",
-        "last_updated_by": "Follow Up Boss"
-      },
-      {
-        "name": "Day 1 - Qualify - Triple Dial - Morning",
-        "due": "2026-02-04",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-04",
-        "last_updated_by": "Follow Up Boss"
-      },
-      {
-        "name": "Day 2 - Qualify - Triple Dial - Morning",
-        "due": "2026-02-05",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-05",
-        "last_updated_by": "Follow Up Boss"
-      },
-      {
-        "name": "Day 2 - Qualify - Triple Dial - Afternoon / Evening",
-        "due": "2026-02-05",
-        "completed": false,
-        "assigned_to": "Madeleine Penales",
-        "last_updated": "2026-02-05",
-        "last_updated_by": "Follow Up Boss"
-      }
-    ],
-    "summary": {
-      "total_notes": 5,
-      "total_calls": 0,
-      "total_talk_time_seconds": 0,
-      "outbound_calls": 0,
-      "inbound_calls": 0,
-      "connected_calls": 0,
-      "unanswered_attempts": 0,
-      "last_note_date": "2026-02-06",
-      "total_texts": 0,
-      "outbound_texts": 0,
-      "inbound_texts": 0
-    }
-  },
-  {
     "person_id": 575227,
-    "fetched_at": "2026-02-06T09:18:15.592373",
+    "fetched_at": "2026-02-09T09:16:40.854333",
     "lead_info": {
       "name": "Freddie Strength",
       "stage": "Qualified Phase 2 - Day 3 to 2 Weeks",
@@ -2272,7 +1447,7 @@
   },
   {
     "person_id": 574756,
-    "fetched_at": "2026-02-06T09:18:26.143656",
+    "fetched_at": "2026-02-09T09:16:51.541709",
     "lead_info": {
       "name": "Charles Cook",
       "stage": "Qualified Phase 2 - Day 3 to 2 Weeks",
@@ -2373,7 +1548,7 @@
   },
   {
     "person_id": 574382,
-    "fetched_at": "2026-02-06T09:18:36.634838",
+    "fetched_at": "2026-02-09T09:17:01.940059",
     "lead_info": {
       "name": "Monica Kalosis",
       "stage": "Qualified Phase 2 - Day 3 to 2 Weeks",
@@ -2491,7 +1666,7 @@
   },
   {
     "person_id": 574300,
-    "fetched_at": "2026-02-06T09:18:47.122934",
+    "fetched_at": "2026-02-09T09:17:12.385488",
     "lead_info": {
       "name": "Juan Labrador",
       "stage": "Qualified Phase 2 - Day 3 to 2 Weeks",
@@ -2596,7 +1771,7 @@
   },
   {
     "person_id": 569591,
-    "fetched_at": "2026-02-06T09:18:57.605557",
+    "fetched_at": "2026-02-09T09:17:22.807221",
     "lead_info": {
       "name": "Brandon Anderson",
       "stage": "Qualified Phase 2 - Day 3 to 2 Weeks",
@@ -2752,7 +1927,7 @@
   },
   {
     "person_id": 565849,
-    "fetched_at": "2026-02-06T09:19:08.050107",
+    "fetched_at": "2026-02-09T09:17:33.266920",
     "lead_info": {
       "name": "Delbert Harris",
       "stage": "Qualified Phase 2 - Day 3 to 2 Weeks",
@@ -2851,8 +2026,162 @@
     }
   },
   {
+    "person_id": 565824,
+    "fetched_at": "2026-02-09T09:17:43.696275",
+    "lead_info": {
+      "name": "Richard Jones",
+      "stage": "Qualified Phase 2 - Day 3 to 2 Weeks",
+      "assigned_to": "Madeleine Penales",
+      "source": "Land Data Import",
+      "created": "2026-01-26",
+      "last_activity": "2026-02-06",
+      "tags": [
+        "Dante Hernandez",
+        "SC - Qualified",
+        "Smarter Contact"
+      ],
+      "phones": [
+        "2565908459",
+        "2567275630",
+        "2568411511"
+      ]
+    },
+    "market_values": {
+      "county_value": 30500.0,
+      "li_comp_value": 191361.0
+    },
+    "property_info": {
+      "county": "Cullman",
+      "state": "AL",
+      "acreage": 2.7,
+      "road_frontage": 0.0,
+      "li_confidence": 91
+    },
+    "notes": [
+      {
+        "date": "2026-01-26",
+        "author": "Travis Rogers",
+        "body": "MESSAGING HISTORY\n[2026-01-26 SENT] Hi Richard, just reaching out to explore the selling potential of your 2.7 acres in Cullman County. Interested? - Iris\n[2026-01-26 RECEIVED] Yes, it's for sale\n[2026-01-26 SENT] Let me get a few details from you so we can build out an offer.\nCan you tell me more about this property? Is there a road access? Are utilities available? and are you aware of any easements or restrictions?\n[2026-01-26 RECEIVED] 2.7 acres it's grown up. It's got trees on it. It doesn't have a driveway. You can put one, but it doesn't have one. It's off of battleground and 157 towards West Point\n[2026-01-26 SENT] Thank you for the information. You're also the sole owner, right?\n[2026-01-26 RECEIVED] It belongs to my ex-husband. I have the date on it. He lives in my yard. He has early stages of dementia me and our son. His son takes care of him so his son would handle everything but everybody's got my number. I do everything for him because our son works\n[2026-01-26 SENT] I'm also curious, I know you're asking for an offer but we want to make sure that we can meet your goals and expectations about the price. Do you have a price in mind for this tract?\n[2026-01-26 RECEIVED] I do not, but you're more than welcome to make an offer and I can forward it to our son",
+        "source": "Zapier",
+        "subject": "Smarter Contact - New Lead Push"
+      },
+      {
+        "date": "2026-01-26",
+        "author": "Travis Rogers",
+        "body": "MESSAGING HISTORY\n[2026-01-26 SENT] Hi Richard, just reaching out to explore the selling potential of your 2.7 acres in Cullman County. Interested? - Iris\n[2026-01-26 RECEIVED] Yes, it's for sale\n[2026-01-26 SENT] Let me get a few details from you so we can build out an offer.\nCan you tell me more about this property? Is there a road access? Are utilities available? and are you aware of any easements or restrictions?\n[2026-01-26 RECEIVED] 2.7 acres it's grown up. It's got trees on it. It doesn't have a driveway. You can put one, but it doesn't have one. It's off of battleground and 157 towards West Point\n[2026-01-26 SENT] Thank you for the information. You're also the sole owner, right?\n[2026-01-26 RECEIVED] It belongs to my ex-husband. I have the date on it. He lives in my yard. He has early stages of dementia me and our son. His son takes care of him so his son would handle everything but everybody's got my number. I do everything for him because our son works\n[2026-01-26 SENT] I'm also curious, I know you're asking for an offer but we want to make sure that we can meet your goals and expectations about the price. Do you have a price in mind for this tract?\n[2026-01-26 RECEIVED] I do not, but you're more than welcome to make an offer and I can forward it to our son\n[2026-01-26 SENT] It looks like investors in the area are offering between $97,000 and $117,000 for properties like yours. Once our manager reviews your property, we can provide you with a firm offer.\n[2026-01-26 SENT] Based on our conversation, I'd like to have our manager, Madeleine to give you a call to discuss an offer. When are you available for a quick call? Mornings or afternoons?\n[2026-01-26 RECEIVED] Does it matter you'll just have to text and make sure that I know it's you call because you know telemarketers are crazy. They call constantly probably be better about 330 or four. Our son will be home.\n[2026-01-26 SENT] I understand, no problem. Text is fine. Thank you! I appreciate your time. My manager will keep in touch. Have a great day!",
+        "source": "Zapier",
+        "subject": "Smarter Contact - New Lead Push"
+      },
+      {
+        "date": "2026-01-26",
+        "author": "Iris Dymphna Samson",
+        "body": "Lead Name: Richard (Property owned by ex-husband; son involved in decisions)\nMultiple Parcels?\nNo \u2013 single parcel discussed\nConfirm Acreage(s):\n2.7 acres\nRoad Access:\nNo existing driveway\nProperty is off Battleground Rd & Hwy 157 toward West Point\nDriveway can be added\nStructures:\nNone mentioned (raw land)\nHave Made Any Improvements:\nNone mentioned\nUtilities:\nNot confirmed (TBD)\nEasements or Restrictions:\nNot disclosed (TBD)\nListed with a Realtor:\nNo\nDecision Makers:\nSon handles decisions\nEx-husband is legal owner (early stages of dementia)\nLead assists with communication\nTimeline:\nNot specified, but open to offers\nPrice Objective:\nNo price given\nOpen to reviewing an offer\nConfirm Phone Number:\nConfirmed (text preferred)\nEmail:\nNot provided\nOther Important Notes:\nProperty is grown up with trees\nNo driveway currently\nSeller prefers text communication due to frequent telemarketer calls\nBest time to call: around 3:30\u20134:00 PM, when son is home\nManager (Madeleine) to follow up with a call\nInvestors in the area estimated between $97K\u2013$117K (not yet a firm offer)- I offered\nEffort Signals\nSame-day response: \u2705 Yes (text)\nCall back: \u274c No (prefers text)\nEngaged in conversation: \u2705 Yes\nPersonal tone: \u2705 Yes (shared family situation)\nCall 5+ minutes: \u274c No call yet"
+      },
+      {
+        "date": "2026-02-06",
+        "author": "Travis Rogers",
+        "body": "@Madeleine Penales definitely ask about deeded access for this one. There may be deeded access to the road to the west, which would be good because that's not very far. Get a sense for motivation and see if they've thought about the pricing that Iris softballed out. I would start from there. It looks like their son handles decisions, so I find that's often a person that's gonna come in and say no. Any discussions you have early on, make sure she runs it by her son."
+      },
+      {
+        "date": "2026-02-06",
+        "author": "Madeleine Penales",
+        "body": "Ask me to callback later"
+      }
+    ],
+    "calls": {
+      "unanswered_attempts": [
+        {
+          "date": "2026-02-05",
+          "by": "Madeleine Penales"
+        },
+        {
+          "date": "2026-02-06",
+          "by": "Madeleine Penales"
+        }
+      ]
+    },
+    "text_messages": [
+      {
+        "date": "2026-02-03",
+        "direction": "outbound",
+        "by": "Madeleine Penales"
+      },
+      {
+        "date": "2026-02-05",
+        "direction": "outbound",
+        "by": "Madeleine Penales"
+      }
+    ],
+    "tasks": [
+      {
+        "name": "Day 1 - Qualify - Triple Dial - Afternoon / Evening",
+        "due": "2026-01-26",
+        "completed": false,
+        "assigned_to": "Madeleine Penales",
+        "last_updated": "2026-02-05",
+        "last_updated_by": "Travis Dispo"
+      },
+      {
+        "name": "Day 1 - Qualify - Triple Dial - Morning",
+        "due": "2026-01-26",
+        "completed": false,
+        "assigned_to": "Madeleine Penales",
+        "last_updated": "2026-02-05",
+        "last_updated_by": "Travis Dispo"
+      },
+      {
+        "name": "Day 1 - Qualify - Triple Dial - Afternoon / Evening",
+        "due": "2026-01-26",
+        "completed": false,
+        "assigned_to": "Madeleine Penales",
+        "last_updated": "2026-02-05",
+        "last_updated_by": "Travis Dispo"
+      },
+      {
+        "name": "Day 1 - Qualify - Triple Dial - Morning",
+        "due": "2026-01-26",
+        "completed": false,
+        "assigned_to": "Madeleine Penales",
+        "last_updated": "2026-02-05",
+        "last_updated_by": "Travis Dispo"
+      },
+      {
+        "name": "Day 2 - Qualify - Triple Dial - Afternoon / Evening",
+        "due": "2026-01-27",
+        "completed": false,
+        "assigned_to": "Madeleine Penales",
+        "last_updated": "2026-02-05",
+        "last_updated_by": "Travis Dispo"
+      },
+      {
+        "name": "Day 2 - Qualify - Triple Dial - Morning",
+        "due": "2026-01-27",
+        "completed": false,
+        "assigned_to": "Madeleine Penales",
+        "last_updated": "2026-02-05",
+        "last_updated_by": "Travis Dispo"
+      }
+    ],
+    "summary": {
+      "total_notes": 5,
+      "total_calls": 2,
+      "total_talk_time_seconds": 0,
+      "outbound_calls": 2,
+      "inbound_calls": 0,
+      "connected_calls": 0,
+      "unanswered_attempts": 2,
+      "last_call_date": "2026-02-06",
+      "last_note_date": "2026-02-06",
+      "total_texts": 2,
+      "outbound_texts": 2,
+      "inbound_texts": 0,
+      "text_response_rate": 0,
+      "last_text_date": "2026-02-05"
+    }
+  },
+  {
     "person_id": 561960,
-    "fetched_at": "2026-02-06T09:19:18.505670",
+    "fetched_at": "2026-02-09T09:17:54.127995",
     "lead_info": {
       "name": "Michael Smith",
       "stage": "Qualified Phase 2 - Day 3 to 2 Weeks",
@@ -2986,7 +2315,7 @@
   },
   {
     "person_id": 555443,
-    "fetched_at": "2026-02-06T09:19:29.061312",
+    "fetched_at": "2026-02-09T09:18:04.557690",
     "lead_info": {
       "name": "Kenneth Holt",
       "stage": "Qualified Phase 2 - Day 3 to 2 Weeks",
@@ -3106,7 +2435,7 @@
   },
   {
     "person_id": 554216,
-    "fetched_at": "2026-02-06T09:19:39.618374",
+    "fetched_at": "2026-02-09T09:18:15.005850",
     "lead_info": {
       "name": "Francis Denney",
       "stage": "Qualified Phase 2 - Day 3 to 2 Weeks",
@@ -3219,7 +2548,7 @@
   },
   {
     "person_id": 552775,
-    "fetched_at": "2026-02-06T09:19:50.137889",
+    "fetched_at": "2026-02-09T09:18:25.408829",
     "lead_info": {
       "name": "Darlene Martin",
       "stage": "Qualified Phase 2 - Day 3 to 2 Weeks",
@@ -3352,7 +2681,7 @@
   },
   {
     "person_id": 551837,
-    "fetched_at": "2026-02-06T09:20:00.633828",
+    "fetched_at": "2026-02-09T09:18:35.846023",
     "lead_info": {
       "name": "Tony Ferguson",
       "stage": "Qualified Phase 2 - Day 3 to 2 Weeks",
@@ -3496,7 +2825,7 @@
   },
   {
     "person_id": 546362,
-    "fetched_at": "2026-02-06T09:20:11.061100",
+    "fetched_at": "2026-02-09T09:18:46.553010",
     "lead_info": {
       "name": "James Bennett",
       "stage": "Qualified Phase 2 - Day 3 to 2 Weeks",
@@ -3613,7 +2942,7 @@
   },
   {
     "person_id": 543282,
-    "fetched_at": "2026-02-06T09:20:21.550301",
+    "fetched_at": "2026-02-09T09:18:57.007900",
     "lead_info": {
       "name": "Desh Sharma",
       "stage": "Qualified Phase 2 - Day 3 to 2 Weeks",
@@ -3715,7 +3044,7 @@
   },
   {
     "person_id": 540573,
-    "fetched_at": "2026-02-06T09:20:32.000511",
+    "fetched_at": "2026-02-09T09:19:07.415758",
     "lead_info": {
       "name": "Onva Henson",
       "stage": "Qualified Phase 2 - Day 3 to 2 Weeks",
@@ -3838,7 +3167,7 @@
   },
   {
     "person_id": 538924,
-    "fetched_at": "2026-02-06T09:20:42.448404",
+    "fetched_at": "2026-02-09T09:19:17.854054",
     "lead_info": {
       "name": "Walter Jones",
       "stage": "Qualified Phase 2 - Day 3 to 2 Weeks",
@@ -3931,7 +3260,7 @@
   },
   {
     "person_id": 537787,
-    "fetched_at": "2026-02-06T09:20:52.915683",
+    "fetched_at": "2026-02-09T09:19:28.251285",
     "lead_info": {
       "name": "Ernest Lunsford",
       "stage": "Qualified Phase 2 - Day 3 to 2 Weeks",
@@ -4050,7 +3379,7 @@
   },
   {
     "person_id": 537153,
-    "fetched_at": "2026-02-06T09:21:03.344855",
+    "fetched_at": "2026-02-09T09:19:38.690138",
     "lead_info": {
       "name": "James Brown",
       "stage": "Qualified Phase 2 - Day 3 to 2 Weeks",
@@ -4158,7 +3487,7 @@
   },
   {
     "person_id": 530082,
-    "fetched_at": "2026-02-06T09:21:13.759140",
+    "fetched_at": "2026-02-09T09:19:49.132394",
     "lead_info": {
       "name": "Katherine Hockaday",
       "stage": "Qualified Phase 2 - Day 3 to 2 Weeks",
@@ -4274,8 +3603,124 @@
     }
   },
   {
+    "person_id": 528746,
+    "fetched_at": "2026-02-09T09:19:59.529224",
+    "lead_info": {
+      "name": "Richard Dittmer",
+      "stage": "Qualified Phase 2 - Day 3 to 2 Weeks",
+      "assigned_to": "Madeleine Penales",
+      "source": "Land Data Import",
+      "created": "2025-12-29",
+      "last_activity": "2026-02-06",
+      "tags": [
+        "Campaign 1",
+        "ReadyMode",
+        "ReadyMode - 02/02/2026 11:56:56"
+      ],
+      "phones": [
+        "5403411929",
+        "5403494989"
+      ]
+    },
+    "market_values": {
+      "county_value": 187500.0,
+      "li_comp_value": 180956.0
+    },
+    "property_info": {
+      "county": "Rappahannock",
+      "state": "VA",
+      "acreage": 25.0,
+      "road_frontage": 3295.0,
+      "li_confidence": 95
+    },
+    "notes": [
+      {
+        "date": "2026-02-02",
+        "author": "Travis Rogers",
+        "body": "Lead Name: Richard Dittmer\nMultiple parcels?: 1\nConfirm acreage(s): 25\nRoad Access: Gravel\nStructures: None\nHave made any improvements: No\nUtilities: Well, Electricity\nEasements or Restrictions: None\nListed with a realtor: No\nDecision Makers: Only him\nTimeline: No specific timeline\nPrice Objective: I mentioned $90,000 - $100,000, he doesn\u2019t have estimate amount in mind, he is planning to talk to a realtor for the value\nConfirm phone number: (540) 341-1929\nEmail: -\nOther Important Notes: Can call anytime\nEffort signals:\nDid the contact respond same day (text)? Did the contact call you back (cold call)? No\nDid the contact happily engage in conversation? Yes\nDid the contact show a personal tone or humor in the communication? Yes\nDid the call last 5+ minutes? Yes",
+        "subject": "Readymode Note - Feb 2, 2026 11:56am"
+      },
+      {
+        "date": "2026-02-06",
+        "author": "Madeleine Penales",
+        "body": "Talked to the wife - they are busy - asked me to call back next week"
+      }
+    ],
+    "calls": {
+      "unanswered_attempts": [
+        {
+          "date": "2026-02-05",
+          "by": "Madeleine Penales",
+          "count": 2
+        },
+        {
+          "date": "2026-02-06",
+          "by": "Madeleine Penales"
+        }
+      ]
+    },
+    "text_messages": [
+      {
+        "date": "2026-02-03",
+        "direction": "outbound",
+        "by": "Madeleine Penales",
+        "delivery_failed": true
+      }
+    ],
+    "tasks": [
+      {
+        "name": "Day 1 - Qualify - Triple Dial - Afternoon / Evening",
+        "due": "2026-02-02",
+        "completed": false,
+        "assigned_to": "Madeleine Penales",
+        "last_updated": "2026-02-02",
+        "last_updated_by": "Follow Up Boss"
+      },
+      {
+        "name": "Day 1 - Qualify - Triple Dial - Morning",
+        "due": "2026-02-02",
+        "completed": false,
+        "assigned_to": "Madeleine Penales",
+        "last_updated": "2026-02-02",
+        "last_updated_by": "Follow Up Boss"
+      },
+      {
+        "name": "Day 2 - Qualify - Triple Dial - Afternoon / Evening",
+        "due": "2026-02-03",
+        "completed": false,
+        "assigned_to": "Madeleine Penales",
+        "last_updated": "2026-02-03",
+        "last_updated_by": "Follow Up Boss"
+      },
+      {
+        "name": "Day 2 - Qualify - Triple Dial - Morning",
+        "due": "2026-02-03",
+        "completed": false,
+        "assigned_to": "Madeleine Penales",
+        "last_updated": "2026-02-03",
+        "last_updated_by": "Follow Up Boss"
+      }
+    ],
+    "summary": {
+      "total_notes": 2,
+      "total_calls": 3,
+      "total_talk_time_seconds": 0,
+      "outbound_calls": 3,
+      "inbound_calls": 0,
+      "connected_calls": 0,
+      "unanswered_attempts": 3,
+      "last_call_date": "2026-02-06",
+      "last_note_date": "2026-02-06",
+      "total_texts": 1,
+      "outbound_texts": 1,
+      "inbound_texts": 0,
+      "text_response_rate": 0,
+      "last_text_date": "2026-02-03"
+    }
+  },
+  {
     "person_id": 527531,
-    "fetched_at": "2026-02-06T09:21:24.251249",
+    "fetched_at": "2026-02-09T09:20:09.969651",
     "lead_info": {
       "name": "Raymond Dorn",
       "stage": "Qualified Phase 2 - Day 3 to 2 Weeks",
@@ -4398,7 +3843,7 @@
   },
   {
     "person_id": 522529,
-    "fetched_at": "2026-02-06T09:21:34.732019",
+    "fetched_at": "2026-02-09T09:20:20.384542",
     "lead_info": {
       "name": "Lora Puffenbarger",
       "stage": "Qualified Phase 2 - Day 3 to 2 Weeks",
@@ -4538,7 +3983,7 @@
   },
   {
     "person_id": 478953,
-    "fetched_at": "2026-02-06T09:21:45.229019",
+    "fetched_at": "2026-02-09T09:20:30.786289",
     "lead_info": {
       "name": "Terry Mccane",
       "stage": "Qualified Phase 2 - Day 3 to 2 Weeks",
@@ -4670,7 +4115,7 @@
   },
   {
     "person_id": 474924,
-    "fetched_at": "2026-02-06T09:21:55.719959",
+    "fetched_at": "2026-02-09T09:20:41.186397",
     "lead_info": {
       "name": "Ronald Denton",
       "stage": "Qualified Phase 2 - Day 3 to 2 Weeks",
@@ -4800,8 +4245,152 @@
     }
   },
   {
+    "person_id": 404115,
+    "fetched_at": "2026-02-09T09:20:51.603848",
+    "lead_info": {
+      "name": "Robert Albritten",
+      "stage": "Qualified Phase 2 - Day 3 to 2 Weeks",
+      "assigned_to": "Madeleine Penales",
+      "source": "Land Data Import",
+      "created": "2025-10-21",
+      "last_activity": "2026-02-06",
+      "tags": [
+        "Campaign 1",
+        "Dante Hernandez",
+        "PRIORITY",
+        "ReadyMode",
+        "ReadyMode - 01/28/2026 16:12:23"
+      ],
+      "phones": [
+        "2293473391",
+        "2294391411",
+        "2299952401"
+      ]
+    },
+    "market_values": {
+      "county_value": 96407.0,
+      "li_comp_value": 699664.0
+    },
+    "property_info": {
+      "county": "Terrell",
+      "state": "GA",
+      "acreage": 84.17,
+      "road_frontage": 4101.0,
+      "li_confidence": 57
+    },
+    "notes": [
+      {
+        "date": "2026-01-28",
+        "author": "Travis Rogers",
+        "body": "Lead Name:  Robert Albritten\nMultiple parcels?: 1\nTotal acres:  84.17\nRoad Access:   HATTIE ALBRITTEN RD\nStructures:  no\nUtilities:  has water, septic, and electricity\nRestrictions & Easement:  no\nListed with a realtor:  no\nDecision Makers:  sole owner\nTimeline:  \nPrice Objective:  $225,000\nConfirm phone number:  (229) 347-3391\nEmail:   \nAdditional Notes:  Lead has other properties that he might consider selling as well. available for a call anytime\nEffort signals:   \nDid the contact respond same day (text)? Did the contact call you back (cold call)? no\nDid the contact happily engage in conversation?: yes\nDid the contact show a personal tone or humor in the communication?: yes\nDid the call last 5+ minutes? yes",
+        "subject": "Readymode Note - Jan 28, 2026 4:12pm"
+      },
+      {
+        "date": "2026-02-02",
+        "author": "Madeleine Penales",
+        "body": "Ask me to callback after 2PM"
+      },
+      {
+        "date": "2026-02-04",
+        "author": "Madeleine Penales",
+        "body": "Wanted to be called during MORNING"
+      },
+      {
+        "date": "2026-02-06",
+        "author": "Travis Rogers",
+        "body": "@Madeleine Penales high Priority - $225k looks like a pretty reasonable asking price in this area. Note the Land Insights comp is definitely not correct - this is not worth $700,000. \n\nAsk him questions about his motivation. Ask about timber. Sounds like he's got other properties he's interested in selling as well."
+      },
+      {
+        "date": "2026-02-06",
+        "author": "Madeleine Penales",
+        "body": "Asked me to callback on MONDAY - busy today"
+      }
+    ],
+    "calls": {
+      "unanswered_attempts": [
+        {
+          "date": "2026-02-02",
+          "by": "Madeleine Penales"
+        },
+        {
+          "date": "2026-02-04",
+          "by": "Madeleine Penales"
+        },
+        {
+          "date": "2026-02-06",
+          "by": "Madeleine Penales"
+        }
+      ],
+      "connected_calls": [
+        {
+          "date": "2026-02-06",
+          "by": "Madeleine Penales",
+          "duration_sec": 54,
+          "direction": "inbound"
+        }
+      ]
+    },
+    "text_messages": [
+      {
+        "date": "2026-02-03",
+        "direction": "outbound",
+        "by": "Madeleine Penales"
+      }
+    ],
+    "tasks": [
+      {
+        "name": "Day 1 - Qualify - Triple Dial - Morning",
+        "due": "2026-01-28",
+        "completed": false,
+        "assigned_to": "Madeleine Penales",
+        "last_updated": "2026-02-05",
+        "last_updated_by": "Travis Dispo"
+      },
+      {
+        "name": "Day 1 - Qualify - Triple Dial - Afternoon / Evening",
+        "due": "2026-01-28",
+        "completed": false,
+        "assigned_to": "Madeleine Penales",
+        "last_updated": "2026-02-05",
+        "last_updated_by": "Travis Dispo"
+      },
+      {
+        "name": "Day 2 - Qualify - Triple Dial - Afternoon / Evening",
+        "due": "2026-01-29",
+        "completed": false,
+        "assigned_to": "Madeleine Penales",
+        "last_updated": "2026-02-05",
+        "last_updated_by": "Travis Dispo"
+      },
+      {
+        "name": "Day 2 - Qualify - Triple Dial - Morning",
+        "due": "2026-01-29",
+        "completed": false,
+        "assigned_to": "Madeleine Penales",
+        "last_updated": "2026-02-05",
+        "last_updated_by": "Travis Dispo"
+      }
+    ],
+    "summary": {
+      "total_notes": 5,
+      "total_calls": 4,
+      "total_talk_time_seconds": 54,
+      "outbound_calls": 3,
+      "inbound_calls": 1,
+      "connected_calls": 1,
+      "unanswered_attempts": 3,
+      "last_call_date": "2026-02-06",
+      "last_note_date": "2026-02-06",
+      "total_texts": 1,
+      "outbound_texts": 1,
+      "inbound_texts": 0,
+      "text_response_rate": 0,
+      "last_text_date": "2026-02-03"
+    }
+  },
+  {
     "person_id": 556123,
-    "fetched_at": "2026-02-06T09:22:06.264545",
+    "fetched_at": "2026-02-09T09:21:02.022014",
     "lead_info": {
       "name": "Jimmy Hensley",
       "stage": "Qualified Phase 3 - 2 Weeks to 4 Weeks",
@@ -4918,7 +4507,7 @@
   },
   {
     "person_id": 531020,
-    "fetched_at": "2026-02-06T09:22:16.698640",
+    "fetched_at": "2026-02-09T09:21:12.433264",
     "lead_info": {
       "name": "George Pratsinakis",
       "stage": "Qualified Phase 3 - 2 Weeks to 4 Weeks",
@@ -5050,7 +4639,7 @@
   },
   {
     "person_id": 530005,
-    "fetched_at": "2026-02-06T09:22:27.123466",
+    "fetched_at": "2026-02-09T09:21:22.870800",
     "lead_info": {
       "name": "Bret Estep",
       "stage": "Qualified Phase 3 - 2 Weeks to 4 Weeks",
@@ -5171,7 +4760,7 @@
   },
   {
     "person_id": 516276,
-    "fetched_at": "2026-02-06T09:22:37.669614",
+    "fetched_at": "2026-02-09T09:21:33.366156",
     "lead_info": {
       "name": "Charles Gilliam",
       "stage": "Qualified Phase 3 - 2 Weeks to 4 Weeks",
@@ -5395,7 +4984,7 @@
   },
   {
     "person_id": 508177,
-    "fetched_at": "2026-02-06T09:22:48.226409",
+    "fetched_at": "2026-02-09T09:21:43.812684",
     "lead_info": {
       "name": "Eleanor Porter",
       "stage": "Qualified Phase 3 - 2 Weeks to 4 Weeks",
@@ -5503,7 +5092,7 @@
   },
   {
     "person_id": 506330,
-    "fetched_at": "2026-02-06T09:22:58.629355",
+    "fetched_at": "2026-02-09T09:21:54.285910",
     "lead_info": {
       "name": "Thomas Minor",
       "stage": "Qualified Phase 3 - 2 Weeks to 4 Weeks",
@@ -5651,7 +5240,7 @@
   },
   {
     "person_id": 506321,
-    "fetched_at": "2026-02-06T09:23:09.042225",
+    "fetched_at": "2026-02-09T09:22:04.750327",
     "lead_info": {
       "name": "Shannon Brown",
       "stage": "Qualified Phase 3 - 2 Weeks to 4 Weeks",
@@ -5784,7 +5373,7 @@
   },
   {
     "person_id": 480673,
-    "fetched_at": "2026-02-06T09:23:19.490637",
+    "fetched_at": "2026-02-09T09:22:15.233505",
     "lead_info": {
       "name": "Dan Short",
       "stage": "Qualified Phase 3 - 2 Weeks to 4 Weeks",

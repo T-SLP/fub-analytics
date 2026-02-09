@@ -481,6 +481,128 @@ def _process_summary(summary: Dict, processed_calls: Dict = None, processed_text
     return _remove_nulls(result)
 
 
+def calculate_response_status(bundle: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Calculate whether a lead has an unanswered inbound communication.
+
+    Checks if the lead sent a text or made a call that hasn't been responded to.
+    This function is available for future use but not currently integrated into reports.
+
+    Args:
+        bundle: Preprocessed lead bundle
+
+    Returns:
+        Dict with:
+            - needs_response: bool - True if there's an unanswered inbound
+            - last_inbound_type: str - 'text', 'call', or None
+            - last_inbound_date: str - Date of last inbound activity
+            - hours_waiting: int - Hours since last inbound (if unanswered)
+            - status: str - 'NEEDS_RESPONSE', 'RESPONDED', or 'NO_INBOUND'
+    """
+    from datetime import datetime, timezone
+
+    result = {
+        'needs_response': False,
+        'last_inbound_type': None,
+        'last_inbound_date': None,
+        'hours_waiting': None,
+        'status': 'NO_INBOUND'
+    }
+
+    # Collect all inbound and outbound activities with timestamps
+    inbound_activities = []
+    outbound_activities = []
+
+    # Process text messages
+    text_messages = bundle.get('text_messages', [])
+    for msg in text_messages:
+        msg_date = msg.get('date')
+        if not msg_date:
+            continue
+        direction = msg.get('direction', '').lower()
+        if direction == 'inbound':
+            inbound_activities.append(('text', msg_date))
+        elif direction == 'outbound':
+            outbound_activities.append(('text', msg_date))
+
+    # Process calls - check for inbound calls
+    calls = bundle.get('calls', {})
+
+    # Connected calls may have inbound
+    connected_calls = calls.get('connected_calls', [])
+    for call in connected_calls:
+        call_date = call.get('date')
+        if not call_date:
+            continue
+        # If call has 'direction' or if it's marked as inbound
+        direction = call.get('direction', '').lower()
+        if direction == 'inbound' or call.get('is_inbound'):
+            inbound_activities.append(('call', call_date))
+        else:
+            outbound_activities.append(('call', call_date))
+
+    # Unanswered attempts are always outbound
+    unanswered = calls.get('unanswered_attempts', [])
+    for call in unanswered:
+        call_date = call.get('date')
+        if call_date:
+            outbound_activities.append(('call', call_date))
+
+    # If no inbound activity, nothing to respond to
+    if not inbound_activities:
+        return result
+
+    # Sort activities by date (most recent first)
+    def parse_date(date_str):
+        """Parse date string to datetime for comparison"""
+        if not date_str:
+            return datetime.min
+        try:
+            # Handle full ISO format
+            if 'T' in date_str:
+                return datetime.fromisoformat(date_str.replace('Z', '+00:00'))
+            # Handle date-only format
+            return datetime.strptime(date_str, '%Y-%m-%d')
+        except (ValueError, TypeError):
+            return datetime.min
+
+    inbound_activities.sort(key=lambda x: parse_date(x[1]), reverse=True)
+    outbound_activities.sort(key=lambda x: parse_date(x[1]), reverse=True)
+
+    # Get most recent inbound
+    last_inbound_type, last_inbound_date = inbound_activities[0]
+    last_inbound_dt = parse_date(last_inbound_date)
+
+    result['last_inbound_type'] = last_inbound_type
+    result['last_inbound_date'] = last_inbound_date
+
+    # Check if there's any outbound activity AFTER the last inbound
+    responded = False
+    for activity_type, activity_date in outbound_activities:
+        activity_dt = parse_date(activity_date)
+        if activity_dt > last_inbound_dt:
+            responded = True
+            break
+
+    if responded:
+        result['status'] = 'RESPONDED'
+        result['needs_response'] = False
+    else:
+        result['status'] = 'NEEDS_RESPONSE'
+        result['needs_response'] = True
+
+        # Calculate hours waiting
+        now = datetime.now()
+        if last_inbound_dt != datetime.min:
+            # Make naive datetime for comparison if needed
+            if last_inbound_dt.tzinfo is not None:
+                now = datetime.now(timezone.utc)
+            delta = now - last_inbound_dt
+            result['hours_waiting'] = int(delta.total_seconds() / 3600)
+
+    return result
+
+
 # CLI for testing
 if __name__ == '__main__':
     import sys
