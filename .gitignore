@@ -63,5 +63,11 @@ __pycache__/
 # Test lead files
 test_lead_*.json
 
+# Test exports
+test_exports/
+
+# Prompt drafts (keep .txt files used by scripts)
+prompts/*.md
+
 # Package lock files (include in repo)
 # package-lock.json
