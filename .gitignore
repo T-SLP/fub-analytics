@@ -54,5 +54,14 @@ __pycache__/
 # Backup files
 *.bak
 
+# Local Claude settings
+.claude/settings.local.json
+
+# Preview files
+*_preview.html
+
+# Test lead files
+test_lead_*.json
+
 # Package lock files (include in repo)
 # package-lock.json
