@@ -75,7 +75,8 @@ def upload_file(service, file_path: str, folder_id: str) -> str:
     file = service.files().create(
         body=file_metadata,
         media_body=media,
-        fields='id, name, webViewLink'
+        fields='id, name, webViewLink',
+        supportsAllDrives=True
     ).execute()
 
     return file
