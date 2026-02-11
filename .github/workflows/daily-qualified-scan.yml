@@ -55,7 +55,7 @@ jobs:
       - name: Upload report to Google Drive
         if: success() && inputs.dry_run != true
         env:
-          GOOGLE_DRIVE_CREDENTIALS: ${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}
+          GOOGLE_DRIVE_CREDENTIALS: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS }}
           GOOGLE_DRIVE_FOLDER_ID: ${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}
         run: |
           python scripts/upload_to_drive.py test_exports/qualified_lead_triage_*.txt
