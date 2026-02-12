@@ -58,7 +58,7 @@ SLACK_CHANNEL_EMAIL = os.getenv("SLACK_CHANNEL_EMAIL",
     "closing-crew-aaaatdi5gbandco22uaz2ctcky@synergylandpa-awo4496.slack.com")
 
 # LLM Configuration
-LLM_MODEL = "claude-opus-4-5-20251101"
+LLM_MODEL = "claude-opus-4-6"
 MAX_TOKENS = 16000  # Allow for detailed response with many leads
 
 # Qualified stages to scan
