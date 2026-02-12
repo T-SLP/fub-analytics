@@ -1,28 +1,22 @@
 #!/usr/bin/env python3
 """
-FUB Webhook Server - Complete Deployment Version v2.1
-Production webhook server with enhanced lead source processing
-Deploy this file to Railway to fix the lead source processing issue.
-Auto-deployment test: 2025-09-17
+FUB Webhook Server v2.1
+Synchronous webhook server for capturing FUB stage changes to Supabase.
+Deployed on Railway via nixpacks.toml.
 """
 
 import os
-import json
-import time
 import datetime
-import threading
-import hashlib
-import hmac
-from typing import Dict, Optional, List, Any
-from collections import defaultdict, deque
+from typing import Dict, Optional, Any
+from collections import deque
 from flask import Flask, request, jsonify
 import psycopg2
 import psycopg2.extras
 import requests
 
 # Configuration
-FUB_API_KEY = os.getenv("FUB_API_KEY", "fka_0DxOlS07NmHLDLVjKXB7N9qJyOSM4QtM2u")
-FUB_SYSTEM_KEY = os.getenv("FUB_SYSTEM_KEY", "390b59dea776f1d5216843d3dfd5a127")
+FUB_API_KEY = os.getenv("FUB_API_KEY")
+FUB_SYSTEM_KEY = os.getenv("FUB_SYSTEM_KEY")
 SUPABASE_DB_URL = os.getenv("SUPABASE_DB_URL")
 WEBHOOK_BASE_URL = os.getenv("WEBHOOK_BASE_URL", "https://fub-stage-tracker-production.up.railway.app")
 
@@ -61,14 +55,9 @@ class WebhookProcessor:
     """Enhanced webhook processor with race condition protection and lead source extraction"""
 
     def __init__(self):
-        self.webhook_queue = deque()
-        self.webhook_dedup_window = 30  # seconds
-        self.person_webhook_tracking = defaultdict(list)
-        self.processing_lock = threading.Lock()
         self.stats = {
             'webhooks_received': 0,
             'webhooks_processed': 0,
-            'webhooks_deduplicated': 0,
             'stage_changes_captured': 0,
             'rapid_transitions_captured': 0,
             'webhooks_failed': 0,
@@ -76,64 +65,15 @@ class WebhookProcessor:
             'errors': 0,
             'last_webhook_time': None,
             'system_start_time': datetime.datetime.utcnow(),
-            'queue_size': 0,
             'success_rate': 100.0,
             'webhook_rate_per_hour': 0.0
         }
 
-        # REMOVED THREADING - Using synchronous processing to fix Railway issues
-        # Background threads were causing webhooks to be ignored on Railway
-        print("🚀 SYNCHRONOUS Webhook processor started - FIXED THREADING ISSUES")
+        print("🚀 Synchronous webhook processor started")
 
         # Debug storage for recent webhook data
-        self.recent_webhook_data = deque(maxlen=10)  # Store last 10 webhooks for debugging
-        self.last_webhook_inspection = None  # Store most recent inspection result
-
-    def add_webhook_to_queue(self, webhook_data: Dict[str, Any]) -> bool:
-        """Add webhook to processing queue with deduplication"""
-        try:
-            with self.processing_lock:
-                self.stats['webhooks_received'] += 1
-                self.stats['last_webhook_time'] = datetime.datetime.utcnow()
-
-                # Extract person ID with enhanced logging and debug storage
-                print(f"🔍 RAW WEBHOOK DATA: {webhook_data}")
-                self.recent_webhook_data.append({
-                    'timestamp': datetime.datetime.utcnow().isoformat(),
-                    'data': webhook_data
-                })
-                person_id = self._extract_person_id(webhook_data)
-                if not person_id:
-                    print(f"⚠️  No person ID extracted from webhook")
-                    print(f"   URI: {webhook_data.get('uri', 'no URI')}")
-                    print(f"   Keys: {list(webhook_data.keys())}")
-                    print(f"   Data keys: {list(webhook_data.get('data', {}).keys()) if 'data' in webhook_data else 'no data key'}")
-                    self.stats['webhooks_ignored'] += 1
-                    return False
-                else:
-                    print(f"✅ Person ID extracted: {person_id}")
-
-                # Deduplication logic
-                current_time = time.time()
-                person_webhooks = self.person_webhook_tracking[person_id]
-                person_webhooks[:] = [t for t in person_webhooks if current_time - t < self.webhook_dedup_window]
-
-                if len(person_webhooks) >= 1:
-                    print(f"🔄 Deduplicating rapid webhook for person {person_id}")
-                    self.stats['webhooks_deduplicated'] += 1
-                    return False
-
-                person_webhooks.append(current_time)
-                self.webhook_queue.append(webhook_data)
-                self.stats['queue_size'] = len(self.webhook_queue)
-
-                print(f"📥 Webhook queued for person {person_id}")
-                return True
-
-        except Exception as e:
-            print(f"❌ Error adding webhook to queue: {e}")
-            self.stats['errors'] += 1
-            return False
+        self.recent_webhook_data = deque(maxlen=10)
+        self.last_webhook_inspection = None
 
     def _extract_person_id(self, webhook_data: Dict[str, Any]) -> Optional[str]:
         """Extract person ID from webhook data - FUB format"""
@@ -273,38 +213,6 @@ class WebhookProcessor:
 
         print("❌ NO NUMERIC IDs FOUND IN WEBHOOK")
         return None
-
-    def _process_webhook_queue(self):
-        """Background thread to process webhook queue"""
-        while True:
-            try:
-                if self.webhook_queue:
-                    webhook_data = self.webhook_queue.popleft()
-                    self.stats['queue_size'] = len(self.webhook_queue)
-
-                    success = self._process_single_webhook(webhook_data)
-
-                    self.stats['webhooks_processed'] += 1
-                    if success:
-                        self.stats['stage_changes_captured'] += 1
-                    else:
-                        self.stats['webhooks_failed'] += 1
-
-                    # Update success rate
-                    if self.stats['webhooks_processed'] > 0:
-                        self.stats['success_rate'] = (self.stats['stage_changes_captured'] / self.stats['webhooks_processed']) * 100
-
-                    # Update webhook rate
-                    hours_running = (datetime.datetime.utcnow() - self.stats['system_start_time']).total_seconds() / 3600
-                    if hours_running > 0:
-                        self.stats['webhook_rate_per_hour'] = self.stats['webhooks_received'] / hours_running
-
-                time.sleep(0.1)
-
-            except Exception as e:
-                print(f"❌ Error in webhook processing thread: {e}")
-                self.stats['errors'] += 1
-                time.sleep(1)
 
     def _process_single_webhook(self, webhook_data: Dict[str, Any]) -> bool:
         """Process a single webhook with enhanced lead source extraction"""
@@ -496,26 +404,6 @@ class WebhookProcessor:
             print(f"❌ Error processing stage change: {e}")
             return False
 
-    def _cleanup_tracking_data(self):
-        """Periodically clean up old tracking data"""
-        while True:
-            try:
-                time.sleep(300)  # Clean up every 5 minutes
-                current_time = time.time()
-
-                with self.processing_lock:
-                    for person_id in list(self.person_webhook_tracking.keys()):
-                        person_webhooks = self.person_webhook_tracking[person_id]
-                        person_webhooks[:] = [t for t in person_webhooks if current_time - t < self.webhook_dedup_window * 2]
-
-                        if not person_webhooks:
-                            del self.person_webhook_tracking[person_id]
-
-                    print(f"🧹 Cleanup: tracking {len(self.person_webhook_tracking)} people")
-
-            except Exception as e:
-                print(f"❌ Cleanup error: {e}")
-
     def get_health_stats(self) -> Dict[str, Any]:
         """Get current health and statistics"""
         uptime_hours = (datetime.datetime.utcnow() - self.stats['system_start_time']).total_seconds() / 3600
@@ -535,41 +423,26 @@ class WebhookProcessor:
             'status': 'healthy' if is_healthy else 'unhealthy',
             'healthy': is_healthy,
             'message': 'Real-time stage tracking active' if is_healthy else 'Health issues detected',
-            'version': '2.1-test-deployment',
+            'version': '2.1',
             'system_type': 'FUB Webhook Server',
             'uptime_hours': round(uptime_hours, 1),
             'system_start_time': self.stats['system_start_time'].strftime('%a, %d %b %Y %H:%M:%S GMT'),
             'last_webhook_time': self.stats['last_webhook_time'].strftime('%a, %d %b %Y %H:%M:%S GMT') if self.stats['last_webhook_time'] else None,
             'webhooks_received': self.stats['webhooks_received'],
             'webhooks_processed': self.stats['webhooks_processed'],
-            'webhooks_deduplicated': self.stats['webhooks_deduplicated'],
             'webhooks_failed': self.stats['webhooks_failed'],
             'webhooks_ignored': self.stats['webhooks_ignored'],
             'stage_changes_captured': self.stats['stage_changes_captured'],
             'rapid_transitions_captured': self.stats['rapid_transitions_captured'],
-            'queue_size': self.stats['queue_size'],
             'success_rate': round(self.stats['success_rate'], 1),
             'webhook_rate_per_hour': round(self.stats['webhook_rate_per_hour'], 1),
             'webhook_url': f"{WEBHOOK_BASE_URL}/webhook/fub/stage-change",
             'health_issues': health_issues,
-            'enhanced_features': [
-                'Lead source extraction from tags',
-                'Race condition protection',
-                'Webhook deduplication',
-                'Transaction safety'
-            ],
-            'capabilities': {
-                'real_time_webhooks': True,
-                'enhanced_analytics': True,
-                'rapid_transition_capture': True,
-                'time_in_stage_tracking': True
-            },
             'configuration': {
                 'database_configured': bool(SUPABASE_DB_URL),
                 'fub_api_configured': bool(FUB_API_KEY),
                 'fub_system_key_configured': bool(FUB_SYSTEM_KEY),
                 'webhook_base_url': WEBHOOK_BASE_URL,
-                'relevant_events': ['peopleStageUpdated', 'peopleCreated', 'peopleUpdated', 'peopleTagsCreated']
             }
         }
 
@@ -607,7 +480,7 @@ def get_stats():
 def handle_fub_stage_webhook():
     """Handle FUB stage change webhooks - SYNCHRONOUS PROCESSING"""
     try:
-        webhook_data = request.get_json()
+        webhook_data = request.get_json(silent=True)
         if not webhook_data:
             return jsonify({'error': 'No JSON payload'}), 400
 
@@ -637,7 +510,6 @@ def handle_fub_stage_webhook():
             print(f"✅ IMMEDIATE SUCCESS: Webhook processed")
             return jsonify({
                 'status': 'processed',
-                'message': 'Webhook processed SYNCHRONOUSLY - threading bypassed',
                 'success': True
             }), 200
         else:
@@ -645,7 +517,6 @@ def handle_fub_stage_webhook():
             print(f"❌ IMMEDIATE FAILURE: Webhook processing failed")
             return jsonify({
                 'status': 'failed',
-                'message': 'Webhook processing failed',
                 'success': False
             }), 200
 
@@ -662,28 +533,19 @@ def root():
     return jsonify({
         'service': 'FUB Webhook Server',
         'status': 'running',
-        'version': '2.1-test-deployment',
-        'message': 'Enhanced lead source processing active',
+        'version': '2.1',
         'endpoints': [
             '/health',
             '/stats',
             '/webhook/fub/stage-change'
-        ],
-        'features': [
-            'Lead source extraction from FUB tags',
-            'Race condition protection with SELECT FOR UPDATE',
-            'Webhook deduplication (30-second window)',
-            'Transaction-safe stage change detection',
-            'Enhanced debugging and statistics'
         ]
     })
 
 if __name__ == '__main__':
-    print("🚀 FUB Webhook Server v2.1 - Enhanced Lead Source Processing")
+    print("🚀 FUB Webhook Server v2.1")
     print(f"📡 Webhook endpoint: {WEBHOOK_BASE_URL}/webhook/fub/stage-change")
     print(f"🔗 FUB API configured: {'✅' if FUB_API_KEY else '❌'}")
     print(f"💾 Database configured: {'✅' if SUPABASE_DB_URL else '❌'}")
-    print("🎯 Enhanced features: Lead source extraction, race condition protection, deduplication")
 
     port = int(os.getenv('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)

@@ -1,10 +1,13 @@
 // utils/dataProcessing.js - Complete data processing functions
 
-// Helper function to get week start (Sunday)
+import { PRE_OFFER_STAGES } from './constants';
+
+// Helper function to get week start (Monday)
+// Aligned with weekly_agent_report.py which uses Monday-Sunday weeks
 export const getWeekStart = (date) => {
   const d = new Date(date);
-  const day = d.getDay();
-  const diff = d.getDate() - day;
+  const day = d.getDay(); // 0=Sunday, 1=Monday, ...
+  const diff = d.getDate() - ((day + 6) % 7);
   return new Date(d.setDate(diff));
 };
 
@@ -90,22 +93,6 @@ export const countOfferEvents = (stageChanges, startDate = null, endDate = null)
   const OFFERS_MADE_STAGE = 'ACQ - Offers Made';
   const OFFER_NOT_ACCEPTED_STAGE = 'ACQ - Offer Not Accepted';
   const CONTRACT_SENT_STAGE = 'ACQ - Contract Sent';
-
-  // Pre-offer stages (stages where an offer hasn't been made yet)
-  // Implicit offers only count when coming FROM these stages
-  const PRE_OFFER_STAGES = [
-    'ACQ - Qualified',
-    'ACQ - Needs Offer',
-    'Qualified Phase 2 - Day 3 to 2 Weeks',
-    'Qualified Phase 3 - 2 Weeks to 4 Weeks',
-    'ACQ - Listed on Market',
-    'ACQ - Went Cold - Drip Campaign',
-    'ACQ - Price Motivated',
-    'ACQ - Not Ready to Sell',
-    'ACQ - New Lead',
-    'ACQ - Contacted',
-    'ACQ - Attempted Contact'
-  ];
 
   // Filter to date range if provided
   let filteredChanges = stageChanges;
@@ -217,21 +204,6 @@ export const getOfferEventsForDate = (stageChanges, targetDateStr) => {
   const OFFERS_MADE_STAGE = 'ACQ - Offers Made';
   const OFFER_NOT_ACCEPTED_STAGE = 'ACQ - Offer Not Accepted';
   const CONTRACT_SENT_STAGE = 'ACQ - Contract Sent';
-
-  // Pre-offer stages (same as in countOfferEvents)
-  const PRE_OFFER_STAGES = [
-    'ACQ - Qualified',
-    'ACQ - Needs Offer',
-    'Qualified Phase 2 - Day 3 to 2 Weeks',
-    'Qualified Phase 3 - 2 Weeks to 4 Weeks',
-    'ACQ - Listed on Market',
-    'ACQ - Went Cold - Drip Campaign',
-    'ACQ - Price Motivated',
-    'ACQ - Not Ready to Sell',
-    'ACQ - New Lead',
-    'ACQ - Contacted',
-    'ACQ - Attempted Contact'
-  ];
 
   // Filter to the target date and identify offer events
   const offerEvents = [];

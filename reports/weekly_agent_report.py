@@ -18,14 +18,21 @@ import json
 import smtplib
 import ssl
 from datetime import datetime, timedelta, timezone
-from zoneinfo import ZoneInfo
 from typing import Dict, List, Any, Optional
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-
-# Eastern timezone for week boundaries
-EASTERN_TZ = ZoneInfo("America/New_York")
 from pathlib import Path
+
+# Add project root to path for shared module imports
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+from shared.constants import (
+    EASTERN_TZ,
+    INCLUDED_AGENTS,
+    TRACKED_STAGES,
+    PRE_OFFER_STAGES,
+    CONNECTION_THRESHOLD_SECONDS,
+)
 
 # Load .env file from project root (for local development)
 try:
@@ -49,23 +56,9 @@ GOOGLE_SHEETS_CREDENTIALS = os.getenv("GOOGLE_SHEETS_CREDENTIALS")  # JSON strin
 # Weekly Agent Report spreadsheet ID
 WEEKLY_AGENT_SHEET_ID = "1MNnP-w70h7gv7NnpRxO6GZstq9m6wW5USAozzCev6gs"
 
-# Stage names to track (must match exactly what's in the database)
-TRACKED_STAGES = [
-    "ACQ - Offers Made",
-    "ACQ - Contract Sent",
-    "ACQ - Under Contract",
-    "Closed",
-    "ACQ - Closed Won",
-]
-
-# Agents to include in the report (others will be filtered out)
-# Set to None to include all agents
-INCLUDED_AGENTS = [
-    "Dante Hernandez",
-    "Madeleine Penales",
-]
-
 # Email configuration
+SLACK_WEBHOOK_URL = os.getenv("SLACK_WEBHOOK_URL")
+
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 EMAIL_FROM = os.getenv("EMAIL_FROM", "travis@synergylandpartners.com")
@@ -128,7 +121,7 @@ def query_open_offers_metrics(fub_api_key: str) -> Dict[str, Dict[str, Any]]:
     Returns per-agent metrics:
     - total_open_offers: Total leads in "Offers Made" or "Contract Sent" (24+ hrs)
     - low_followup_pct: % of open offers with 0, 1, or 2 follow-up calls (need more outreach)
-    - low_connection_pct: % of open offers with 0 or 1 connections/2+ min calls (need more engagement)
+    - low_connection_pct: % of open offers with 0 or 1 connections (3+ min calls, need more engagement)
 
     Criteria for open offers:
     - Lead is currently in "ACQ - Offers Made" or "ACQ - Contract Sent" stage
@@ -264,9 +257,9 @@ def query_open_offers_metrics(fub_api_key: str) -> Dict[str, Dict[str, Any]]:
 
             if call_date >= offer_date:
                 calls_after_offer[person_id_str] += 1
-                # Also count connections (2+ min = 120+ seconds)
+                # Count connections (calls >= threshold are real conversations, not voicemails)
                 duration = call.get('duration', 0) or 0
-                if duration >= 120:
+                if duration >= CONNECTION_THRESHOLD_SECONDS:
                     connections_after_offer[person_id_str] += 1
         except Exception:
             continue
@@ -339,21 +332,8 @@ def query_standardized_offer_metrics(start_date: datetime, end_date: datetime) -
     conn = psycopg2.connect(SUPABASE_DB_URL, sslmode='require')
     offer_counts = {}
 
-    # Pre-offer stages (stages where an offer hasn't been made yet)
-    # Implicit offers only count when coming FROM these stages
-    pre_offer_stages = (
-        'ACQ - Qualified',
-        'ACQ - Needs Offer',
-        'Qualified Phase 2 - Day 3 to 2 Weeks',
-        'Qualified Phase 3 - 2 Weeks to 4 Weeks',
-        'ACQ - Listed on Market',
-        'ACQ - Went Cold - Drip Campaign',
-        'ACQ - Price Motivated',
-        'ACQ - Not Ready to Sell',
-        'ACQ - New Lead',
-        'ACQ - Contacted',
-        'ACQ - Attempted Contact'
-    )
+    # Pre-offer stages imported from shared.constants.PRE_OFFER_STAGES
+    pre_offer_stages = PRE_OFFER_STAGES
 
     try:
         with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
@@ -455,6 +435,202 @@ def query_standardized_offer_metrics(start_date: datetime, end_date: datetime) -
         conn.close()
 
     return offer_counts
+
+
+def backfill_missing_stage_changes(start_date: datetime, end_date: datetime) -> int:
+    """
+    Backfill missing stage changes by cross-referencing FUB API with the database.
+
+    The webhook server can miss events due to downtime or failures. This function
+    queries FUB for people currently in tracked stages and inserts any missing
+    stage transitions into the database, making the report self-healing.
+
+    If a person jumped past intermediate tracked stages (e.g., Offers Made -> Under Contract),
+    intermediate records are also inserted (e.g., Contract Sent) so all KPIs count correctly.
+
+    Returns the number of backfilled records.
+    """
+    if not FUB_API_KEY or not SUPABASE_DB_URL:
+        print("  WARNING: Cannot backfill - missing FUB_API_KEY or SUPABASE_DB_URL")
+        return 0
+
+    auth_string = base64.b64encode(f'{FUB_API_KEY}:'.encode()).decode()
+    headers = {
+        'Authorization': f'Basic {auth_string}',
+        'Content-Type': 'application/json'
+    }
+
+    # Pipeline order for intermediate stage insertion
+    STAGE_PIPELINE = [
+        "ACQ - Offers Made",
+        "ACQ - Contract Sent",
+        "ACQ - Under Contract",
+    ]
+
+    # Convert report period to UTC ISO strings for comparison with FUB timestamps
+    start_utc_str = start_date.astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+    end_utc_str = end_date.astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+
+    backfilled = 0
+    conn = psycopg2.connect(SUPABASE_DB_URL, sslmode='require')
+
+    try:
+        for stage in TRACKED_STAGES:
+            # Fetch people currently in this stage from FUB API (with pagination)
+            people_in_stage = []
+            offset = 0
+            limit = 100
+
+            while True:
+                try:
+                    response = requests.get(
+                        'https://api.followupboss.com/v1/people',
+                        params={
+                            'stage': stage,
+                            'limit': limit,
+                            'offset': offset,
+                            'fields': 'id,firstName,lastName,stage,assignedTo,assignedUserId,updated'
+                        },
+                        headers=headers,
+                        timeout=30
+                    )
+
+                    if response.status_code == 200:
+                        data = response.json()
+                        people = data.get('people', [])
+                        people_in_stage.extend(people)
+
+                        if len(people) < limit:
+                            break
+                        offset += limit
+                    else:
+                        print(f"  WARNING: FUB API error {response.status_code} for stage '{stage}'")
+                        break
+                except Exception as e:
+                    print(f"  WARNING: Error fetching people in '{stage}': {e}")
+                    break
+
+            # Check each person against the database
+            for person in people_in_stage:
+                fub_updated = person.get('updated', '')
+
+                # Only backfill people updated within the report period
+                if fub_updated < start_utc_str or fub_updated > end_utc_str:
+                    continue
+
+                person_id = str(person['id'])
+
+                # Get latest stage from database
+                with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
+                    cur.execute("""
+                        SELECT stage_to, changed_at
+                        FROM stage_changes
+                        WHERE person_id = %s
+                        ORDER BY changed_at DESC
+                        LIMIT 1
+                    """, (person_id,))
+                    row = cur.fetchone()
+
+                db_latest_stage = row['stage_to'] if row else None
+
+                # Skip if DB already shows this stage
+                if db_latest_stage == stage:
+                    continue
+
+                # Skip if a backfill record already exists for this person/stage in this period
+                with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
+                    start_utc_naive = start_date.astimezone(timezone.utc).replace(tzinfo=None)
+                    end_utc_naive = end_date.astimezone(timezone.utc).replace(tzinfo=None)
+                    cur.execute("""
+                        SELECT id FROM stage_changes
+                        WHERE person_id = %s AND stage_to = %s
+                          AND source = 'backfill'
+                          AND changed_at >= %s AND changed_at < %s
+                        LIMIT 1
+                    """, (person_id, stage, start_utc_naive, end_utc_naive))
+                    if cur.fetchone():
+                        continue
+
+                # Parse FUB updated timestamp as naive UTC for DB storage
+                try:
+                    fub_dt = datetime.fromisoformat(fub_updated.replace('Z', '+00:00'))
+                    changed_at_naive = fub_dt.replace(tzinfo=None)
+                except Exception:
+                    changed_at_naive = datetime.now(timezone.utc).replace(tzinfo=None)
+
+                # Extract agent info
+                assigned_to = person.get('assignedTo', {})
+                assigned_user_name = None
+                assigned_user_id = person.get('assignedUserId')
+                if assigned_to and isinstance(assigned_to, dict):
+                    assigned_user_name = assigned_to.get('name')
+                elif assigned_to and isinstance(assigned_to, str):
+                    assigned_user_name = assigned_to
+
+                first_name = person.get('firstName', 'Unknown')
+                last_name = person.get('lastName', 'Unknown')
+
+                # Check if intermediate pipeline stages need to be inserted
+                # e.g., if DB shows "Offers Made" and FUB shows "Under Contract",
+                # also insert "Contract Sent" so the Contracts Sent KPI counts correctly
+                target_idx = next((i for i, s in enumerate(STAGE_PIPELINE) if s == stage), -1)
+                db_idx = next((i for i, s in enumerate(STAGE_PIPELINE) if s == db_latest_stage), -1)
+
+                prev_stage = db_latest_stage
+                if db_idx >= 0 and target_idx > db_idx + 1:
+                    # Insert intermediate stages with slightly earlier timestamps
+                    for i in range(db_idx + 1, target_idx):
+                        intermediate_stage = STAGE_PIPELINE[i]
+                        offset_seconds = (target_idx - i) * 60  # 1 min before each subsequent stage
+                        intermediate_dt = changed_at_naive - timedelta(seconds=offset_seconds)
+
+                        with conn.cursor() as cur:
+                            cur.execute("""
+                                INSERT INTO stage_changes (
+                                    person_id, first_name, last_name, stage_from, stage_to,
+                                    changed_at, received_at, source,
+                                    assigned_user_id, assigned_user_name
+                                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                            """, (
+                                person_id, first_name, last_name,
+                                prev_stage, intermediate_stage,
+                                intermediate_dt, datetime.now(timezone.utc).replace(tzinfo=None), 'backfill',
+                                str(assigned_user_id) if assigned_user_id else None,
+                                assigned_user_name
+                            ))
+                        backfilled += 1
+                        print(f"    BACKFILLED (intermediate): {first_name} {last_name} (ID: {person_id}): "
+                              f"{prev_stage} -> {intermediate_stage}")
+                        prev_stage = intermediate_stage
+
+                # Insert the final stage transition
+                with conn.cursor() as cur:
+                    cur.execute("""
+                        INSERT INTO stage_changes (
+                            person_id, first_name, last_name, stage_from, stage_to,
+                            changed_at, received_at, source,
+                            assigned_user_id, assigned_user_name
+                        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    """, (
+                        person_id, first_name, last_name,
+                        prev_stage, stage,
+                        changed_at_naive, datetime.now(timezone.utc).replace(tzinfo=None), 'backfill',
+                        str(assigned_user_id) if assigned_user_id else None,
+                        assigned_user_name
+                    ))
+                conn.commit()
+                backfilled += 1
+                print(f"    BACKFILLED: {first_name} {last_name} (ID: {person_id}): "
+                      f"{prev_stage} -> {stage} (agent: {assigned_user_name}, updated: {fub_updated})")
+
+    except Exception as e:
+        print(f"  ERROR during backfill: {e}")
+        import traceback
+        traceback.print_exc()
+    finally:
+        conn.close()
+
+    return backfilled
 
 
 def query_stage_metrics(start_date: datetime, end_date: datetime) -> Dict[str, Dict[str, int]]:
@@ -630,29 +806,29 @@ def query_call_metrics(start_date: datetime, end_date: datetime, user_ids: Dict[
     for user_name in user_ids.keys():
         call_metrics[user_name] = {
             'outbound_calls': 0,
-            'connected': 0,  # Outbound calls >= 1 min (for connection rate)
-            'conversations': 0,  # All calls (inbound + outbound) >= 2 min
+            'connected': 0,  # Outbound calls >= 1 min
+            'outbound_connections': 0,  # Outbound calls >= CONNECTION_THRESHOLD_SECONDS (for Connection Rate)
+            'conversations': 0,  # All calls (inbound + outbound) >= threshold (for Avg Call)
             'talk_time_min': 0,
-            'long_call_durations': [],  # Track durations for calls >= 2 min to calculate average
+            'long_call_durations': [],  # Track durations for calls >= threshold to calculate average
             'outbound_call_details': [],  # For multi-dial sequence analysis
-            'unique_leads_dialed': set(),  # Track unique personIds for leads dialed
-            'unique_leads_connected': set(),  # Track unique personIds for conversations (2+ min)
+            'unique_leads_dialed': set(),  # Track unique personIds for outbound calls
+            'unique_leads_connected': set(),  # Track unique personIds for outbound connected calls
             'single_dial_calls': 0,
-            'single_dial_answered': 0,  # Single dials that resulted in 2+ min call
+            'single_dial_answered': 0,  # Single dials that resulted in a connection
             'double_dial_sequences': 0,
-            'double_dial_answered': 0,  # Double dial sequences that resulted in 2+ min call
+            'double_dial_answered': 0,  # Double dial sequences that resulted in a connection
             'triple_dial_sequences': 0,
             'multi_dial_calls': 0,  # Total calls that are part of any 2x+ sequence
         }
 
     # Group calls by userId and calculate metrics
-    # FUB definitions (from https://help.followupboss.com/hc/en-us/articles/360014186693-Call-Reporting):
-    # - Calls Made = Outgoing calls only (isIncoming=False)
-    # - Connected = Calls with duration >= 60 seconds (1 minute)
-    # - Conversations = ANY call (inbound or outbound) with duration >= 120 seconds (2 minutes)
+    # Our definitions (customized from FUB defaults):
+    # - Outbound Calls = Outgoing calls only (isIncoming=False)
+    # - Connections = Outbound calls with duration >= CONNECTION_THRESHOLD_SECONDS (real conversations, not voicemails)
+    # - Connection Rate = Connections / Outbound Calls
     # - Talk Time = Total duration of all calls
-    # Custom metric:
-    # - Connection Rate = Connected / Outbound Calls (measures how often outbound calls reach someone)
+    # - Avg Call = Average duration of calls >= CONNECTION_THRESHOLD_SECONDS
     for call in all_calls:
         call_user_id = call.get('userId')
         call_user_name = call.get('userName')
@@ -671,9 +847,13 @@ def query_call_metrics(start_date: datetime, end_date: datetime, user_ids: Dict[
             if is_outgoing:
                 call_metrics[agent_name]['outbound_calls'] += 1
 
-                # Connected = outbound calls >= 1 min (used for connection rate)
+                # Connected = outbound calls >= 1 min
                 if duration >= 60:
                     call_metrics[agent_name]['connected'] += 1
+
+                # Outbound connections (for Connections metric & Connection Rate)
+                if duration >= CONNECTION_THRESHOLD_SECONDS:
+                    call_metrics[agent_name]['outbound_connections'] += 1
 
                 # Collect call details for multi-dial sequence analysis
                 to_number = call.get('toNumber')
@@ -685,21 +865,18 @@ def query_call_metrics(start_date: datetime, end_date: datetime, user_ids: Dict[
                         'duration': duration,
                     })
 
-                # Track unique leads dialed (by personId)
+                # Track unique leads dialed and connected (outbound only)
                 person_id = call.get('personId')
                 if person_id:
                     call_metrics[agent_name]['unique_leads_dialed'].add(person_id)
+                    if duration >= CONNECTION_THRESHOLD_SECONDS:
+                        call_metrics[agent_name]['unique_leads_connected'].add(person_id)
 
-            # Conversations = ANY call (inbound or outbound) >= 2 min
-            # This matches FUB's definition: "Calls lasting 2 minutes or more"
-            if duration >= 120:
+            # Conversations = ANY call (inbound or outbound) >= threshold
+            # Used for average call duration calculation
+            if duration >= CONNECTION_THRESHOLD_SECONDS:
                 call_metrics[agent_name]['conversations'] += 1
-                # Track durations for average calculation
                 call_metrics[agent_name]['long_call_durations'].append(duration)
-                # Track unique leads with conversations
-                person_id = call.get('personId')
-                if person_id:
-                    call_metrics[agent_name]['unique_leads_connected'].add(person_id)
 
             # Talk time includes all calls with duration
             if duration > 0:
@@ -752,8 +929,8 @@ def query_call_metrics(start_date: datetime, end_date: datetime, user_ids: Dict[
                 else:
                     break
 
-            # Check if any call in the sequence resulted in an answer (2+ min)
-            sequence_answered = any(c.get('duration', 0) >= 120 for c in sequence_calls)
+            # Check if any call in the sequence resulted in a real connection
+            sequence_answered = any(c.get('duration', 0) >= CONNECTION_THRESHOLD_SECONDS for c in sequence_calls)
 
             # Count the sequence
             if sequence_length >= 3:
@@ -832,7 +1009,7 @@ def write_to_google_sheets(
         # Metrics
         "Talk Time (min)",
         "Outbound Calls",
-        "Connections (2+ min)",
+        "Connections (3+ min)",
         "Connection Rate",
         "Unique Leads Dialed",
         "Unique Leads Connected",
@@ -870,11 +1047,11 @@ def write_to_google_sheets(
         outbound_calls = call_data.get('outbound_calls', 0)
         unique_leads = call_data.get('unique_leads_dialed', 0)
         unique_leads_connected = call_data.get('unique_leads_connected', 0)
-        connections = call_data.get('conversations', 0)  # Calls >= 2 min
+        connections = call_data.get('outbound_connections', 0)  # Outbound calls >= 3 min
         long_call_durations = call_data.get('long_call_durations', [])
         avg_call_min = round(sum(long_call_durations) / len(long_call_durations) / 60, 1) if long_call_durations else 0
         talk_time = call_data.get('talk_time_min', 0)
-        # Connection Rate uses 2+ min threshold (connections / outbound calls)
+        # Connection Rate = outbound 3+ min calls / total outbound calls
         connection_rate = f"{round(connections / outbound_calls * 100)}%" if outbound_calls > 0 else "0%"
         # Unique Lead Connection Rate
         unique_lead_conn_rate = f"{round(unique_leads_connected / unique_leads * 100)}%" if unique_leads > 0 else "0%"
@@ -957,7 +1134,7 @@ def write_to_google_sheets(
     # Calculate rates from totals (not averaging rates)
     totals['connection_rate'] = f"{round(totals['connections'] / totals['outbound_calls'] * 100)}%" if totals['outbound_calls'] > 0 else "0%"
     totals['unique_lead_conn_rate'] = f"{round(totals['unique_leads_connected'] / totals['unique_leads'] * 100)}%" if totals['unique_leads'] > 0 else "0%"
-    # Avg Call (min) = average duration of 2+ min calls only (matches agent-level calculation)
+    # Avg Call (min) = average duration of 3+ min calls only (matches agent-level calculation)
     totals['avg_call_min'] = round(totals['long_call_total_sec'] / totals['long_call_count'] / 60, 1) if totals['long_call_count'] > 0 else 0
     # For dial sequences with answer rates, sum the counts (rates don't sum meaningfully)
     totals['single_dial_with_rate'] = totals['single_dial']
@@ -1019,7 +1196,7 @@ def write_to_google_sheets(
     metric_items = [
         ("Talk Time (min)", 'talk_time'),
         ("Outbound Calls", 'outbound_calls'),
-        ("Connections (2+ min)", 'connections'),
+        ("Connections (3+ min)", 'connections'),
         ("Connection Rate", 'connection_rate'),
         ("Unique Leads Dialed", 'unique_leads'),
         ("Unique Leads Connected", 'unique_leads_connected'),
@@ -1219,7 +1396,7 @@ def generate_email_html(
     metric_items = [
         ("Talk Time (min)", 'talk_time'),
         ("Outbound Calls", 'outbound_calls'),
-        ("Connections (2+ min)", 'connections'),
+        ("Connections (3+ min)", 'connections'),
         ("Connection Rate", 'connection_rate'),
         ("Unique Leads Dialed", 'unique_leads'),
         ("Unique Leads Connected", 'unique_leads_connected'),
@@ -1312,6 +1489,19 @@ def send_email_report(
         return False
 
 
+def send_backfill_slack_alert(count: int):
+    """Post a Slack alert when backfill detects missing webhook records."""
+    if not SLACK_WEBHOOK_URL:
+        return
+    try:
+        health_url = f"{os.getenv('WEBHOOK_BASE_URL', 'https://fub-stage-tracker-production.up.railway.app')}/health"
+        requests.post(SLACK_WEBHOOK_URL, json={
+            "text": f"⚠️ Webhook gap detected — backfilled {count} missing stage change(s). Check Railway health: {health_url}"
+        }, timeout=10)
+    except Exception as e:
+        print(f"WARNING: Failed to send backfill Slack alert: {e}")
+
+
 def main():
     parser = argparse.ArgumentParser(description='Generate weekly agent performance report')
     parser.add_argument(
@@ -1359,6 +1549,15 @@ def main():
     start_date, end_date = get_date_range(args.days, args.previous_week)
     print(f"Date range: {start_date.strftime('%Y-%m-%d')} to {end_date.strftime('%Y-%m-%d')}")
 
+    # Backfill missing stage changes from FUB API before querying metrics
+    print("Backfilling missing stage changes from FUB API...")
+    backfill_count = backfill_missing_stage_changes(start_date, end_date)
+    if backfill_count > 0:
+        print(f"Backfilled {backfill_count} missing stage change(s)")
+        send_backfill_slack_alert(backfill_count)
+    else:
+        print("No missing stage changes detected")
+
     # Get stage metrics from database
     print("Querying stage metrics from database...")
     stage_metrics = query_stage_metrics(start_date, end_date)
@@ -1404,19 +1603,18 @@ def main():
             outbound_calls = call_data.get('outbound_calls', 0)
             unique_leads = call_data.get('unique_leads_dialed', 0)
             unique_connected = call_data.get('unique_leads_connected', 0)
-            connected = call_data.get('connected', 0)
-            conversations = call_data.get('conversations', 0)
+            connections = call_data.get('outbound_connections', 0)
             long_call_durations = call_data.get('long_call_durations', [])
             avg_call_min = round(sum(long_call_durations) / len(long_call_durations) / 60, 1) if long_call_durations else 0
             talk_time = call_data.get('talk_time_min', 0)
-            connection_rate = f"{round(connected / outbound_calls * 100)}%" if outbound_calls > 0 else "0%"
+            connection_rate = f"{round(connections / outbound_calls * 100)}%" if outbound_calls > 0 else "0%"
             single_dial = call_data.get('single_dial_calls', 0)
             double_seq = call_data.get('double_dial_sequences', 0)
             triple_seq = call_data.get('triple_dial_sequences', 0)
 
             # Truncate long agent names for display
             display_name = agent[:24] if len(agent) > 24 else agent
-            print(f"{display_name:<25} {offers:<7} {contracts:<10} {under_contract:<8} {closed:<7} {outbound_calls:<9} {unique_leads:<7} {unique_connected:<10} {conversations:<7} {connection_rate:<9} {talk_time:<8} {avg_call_min:<7} {single_dial:<7} {double_seq:<4} {triple_seq:<4}")
+            print(f"{display_name:<25} {offers:<7} {contracts:<10} {under_contract:<8} {closed:<7} {outbound_calls:<9} {unique_leads:<7} {unique_connected:<10} {connections:<7} {connection_rate:<9} {talk_time:<8} {avg_call_min:<7} {single_dial:<7} {double_seq:<4} {triple_seq:<4}")
 
     # Prepare agent data for email (same logic as write_to_google_sheets)
     def prepare_email_data():
@@ -1439,7 +1637,7 @@ def main():
             outbound_calls = call_data.get('outbound_calls', 0)
             unique_leads = call_data.get('unique_leads_dialed', 0)
             unique_leads_connected = call_data.get('unique_leads_connected', 0)
-            connections = call_data.get('conversations', 0)
+            connections = call_data.get('outbound_connections', 0)  # Outbound calls >= 3 min
             long_call_durations = call_data.get('long_call_durations', [])
             avg_call_min = round(sum(long_call_durations) / len(long_call_durations) / 60, 1) if long_call_durations else 0
             talk_time = call_data.get('talk_time_min', 0)

@@ -1,0 +1,46 @@
+name: Webhook Health Check
+
+on:
+  schedule:
+    # 9 AM ET and 3 PM ET weekdays (14:00 and 20:00 UTC during EST)
+    - cron: '0 14,20 * * 1-5'
+
+  workflow_dispatch:
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+
+    env:
+      HEALTH_URL: https://fub-stage-tracker-production.up.railway.app/health
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+    steps:
+      - name: Ping Railway health endpoint
+        id: health
+        run: |
+          HTTP_RESPONSE=$(curl -sf --max-time 15 "$HEALTH_URL" 2>&1) && STATUS=0 || STATUS=$?
+
+          if [ $STATUS -ne 0 ]; then
+            echo "healthy=false" >> "$GITHUB_OUTPUT"
+            echo "reason=Health endpoint unreachable (curl exit code $STATUS)" >> "$GITHUB_OUTPUT"
+          elif echo "$HTTP_RESPONSE" | grep -q '"healthy": false'; then
+            echo "healthy=false" >> "$GITHUB_OUTPUT"
+            echo "reason=Server reports unhealthy: $HTTP_RESPONSE" >> "$GITHUB_OUTPUT"
+          else
+            echo "healthy=true" >> "$GITHUB_OUTPUT"
+            echo "Server is healthy"
+          fi
+
+      - name: Alert Slack if unhealthy
+        if: steps.health.outputs.healthy == 'false'
+        run: |
+          if [ -z "$SLACK_WEBHOOK_URL" ]; then
+            echo "SLACK_WEBHOOK_URL not set, skipping alert"
+            exit 0
+          fi
+
+          REASON="${{ steps.health.outputs.reason }}"
+          curl -sf -X POST "$SLACK_WEBHOOK_URL" \
+            -H 'Content-Type: application/json' \
+            -d "{\"text\": \"🚨 Webhook server health check FAILED\\n${REASON}\\nCheck: $HEALTH_URL\"}"
