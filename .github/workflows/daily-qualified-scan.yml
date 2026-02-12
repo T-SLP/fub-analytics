@@ -36,9 +36,9 @@ jobs:
           FUB_API_KEY: ${{ secrets.FUB_API_KEY }}
           FUB_SUBDOMAIN: ${{ secrets.FUB_SUBDOMAIN }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          GMAIL_EMAIL: ${{ secrets.EMAIL_FROM }}
-          GMAIL_APP_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-          SLACK_CHANNEL_EMAIL: ${{ secrets.SLACK_CHANNEL_EMAIL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          GOOGLE_DRIVE_CREDENTIALS: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS }}
+          GOOGLE_DRIVE_FOLDER_ID: ${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}
         run: |
           cd reports
 
@@ -51,11 +51,3 @@ jobs:
 
           echo "Running: $CMD"
           $CMD
-
-      - name: Upload report to Google Drive
-        if: success() && inputs.dry_run != true
-        env:
-          GOOGLE_DRIVE_CREDENTIALS: ${{ secrets.GOOGLE_SHEETS_CREDENTIALS }}
-          GOOGLE_DRIVE_FOLDER_ID: ${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}
-        run: |
-          python scripts/upload_to_drive.py test_exports/qualified_lead_triage_*.txt

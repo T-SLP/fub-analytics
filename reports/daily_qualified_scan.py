@@ -3,27 +3,22 @@
 Daily Qualified Lead Triage
 
 Fetches all leads from qualified stages, sends batch to Claude API for
-ranking/scoring, and emails the triage report to Slack channel as a TXT attachment.
+ranking/scoring, uploads report to Google Drive, and posts link to Slack.
 
-Schedule: 7:00 AM ET Monday-Friday via GitHub Actions
+Schedule: 6:00 AM ET Monday-Friday via GitHub Actions
 
 Usage:
     python daily_qualified_scan.py              # Normal run
-    python daily_qualified_scan.py --dry-run    # No Slack, saves report locally
+    python daily_qualified_scan.py --dry-run    # No Slack, no upload, saves report locally
 """
 
 import os
 import sys
 import json
-import smtplib
-import ssl
-from datetime import datetime, date
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.base import MIMEBase
-from email import encoders
+import requests
+from datetime import date
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 # Load .env file from project root
 try:
@@ -46,16 +41,20 @@ try:
 except ImportError:
     ANTHROPIC_AVAILABLE = False
 
+# Try to import Google Drive libraries
+try:
+    from google.oauth2 import service_account
+    from googleapiclient.discovery import build
+    from googleapiclient.http import MediaFileUpload
+    GOOGLE_DRIVE_AVAILABLE = True
+except ImportError:
+    GOOGLE_DRIVE_AVAILABLE = False
+
 # Configuration
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
-
-# Email configuration
-SMTP_SERVER = "smtp.gmail.com"
-SMTP_PORT = 587
-EMAIL_FROM = os.getenv("GMAIL_EMAIL")
-EMAIL_PASSWORD = os.getenv("GMAIL_APP_PASSWORD")
-SLACK_CHANNEL_EMAIL = os.getenv("SLACK_CHANNEL_EMAIL",
-    "closing-crew-aaaatdi5gbandco22uaz2ctcky@synergylandpa-awo4496.slack.com")
+SLACK_WEBHOOK_URL = os.getenv("SLACK_WEBHOOK_URL")
+GOOGLE_DRIVE_CREDENTIALS = os.getenv("GOOGLE_DRIVE_CREDENTIALS")
+GOOGLE_DRIVE_FOLDER_ID = os.getenv("GOOGLE_DRIVE_FOLDER_ID")
 
 # LLM Configuration
 LLM_MODEL = "claude-opus-4-6"
@@ -165,55 +164,111 @@ Please analyze and rank these leads according to your scoring system."""
         return f"ERROR: Failed to get response from Claude API.\n\nError details: {str(e)}"
 
 
-def send_to_slack_via_email(report_text: str, lead_count: int) -> bool:
-    """Send the triage report to Slack channel via email with TXT attachment"""
-    if not all([EMAIL_FROM, EMAIL_PASSWORD, SLACK_CHANNEL_EMAIL]):
-        print("[ERROR] Email configuration incomplete")
-        if not EMAIL_FROM:
-            print("       GMAIL_EMAIL not set")
-        if not EMAIL_PASSWORD:
-            print("       GMAIL_APP_PASSWORD not set")
+def upload_to_google_drive(file_path: Path) -> Optional[str]:
+    """Upload file to Google Drive and return the view link"""
+    if not GOOGLE_DRIVE_AVAILABLE:
+        print("  [ERROR] Google Drive libraries not installed")
+        return None
+
+    if not GOOGLE_DRIVE_CREDENTIALS or not GOOGLE_DRIVE_FOLDER_ID:
+        print("  [ERROR] Google Drive credentials not configured")
+        return None
+
+    try:
+        # Parse credentials
+        creds_dict = json.loads(GOOGLE_DRIVE_CREDENTIALS)
+        credentials = service_account.Credentials.from_service_account_info(
+            creds_dict,
+            scopes=['https://www.googleapis.com/auth/drive.file']
+        )
+        service = build('drive', 'v3', credentials=credentials)
+
+        # Upload file
+        file_metadata = {
+            'name': file_path.name,
+            'parents': [GOOGLE_DRIVE_FOLDER_ID]
+        }
+        media = MediaFileUpload(str(file_path), mimetype='text/plain', resumable=True)
+
+        file = service.files().create(
+            body=file_metadata,
+            media_body=media,
+            fields='id, name, webViewLink',
+            supportsAllDrives=True
+        ).execute()
+
+        link = file.get('webViewLink')
+        print(f"  Uploaded to Google Drive: {file.get('name')}")
+        print(f"  Link: {link}")
+        return link
+
+    except Exception as e:
+        print(f"  [ERROR] Google Drive upload failed: {e}")
+        return None
+
+
+def post_to_slack(lead_count: int, drive_link: str) -> bool:
+    """Post triage summary to Slack with Google Drive link"""
+    if not SLACK_WEBHOOK_URL:
+        print("  [ERROR] SLACK_WEBHOOK_URL not configured")
         return False
 
     today = date.today().strftime('%Y-%m-%d')
-    filename = f"qualified_lead_triage_{today}.txt"
 
-    # Create email
-    message = MIMEMultipart()
-    message['From'] = EMAIL_FROM
-    message['To'] = SLACK_CHANNEL_EMAIL
-    message['Subject'] = f"Daily Qualified Lead Triage - {today}"
-
-    # Email body (will show in Slack)
-    body = f"""Daily Qualified Lead Triage Report
-
-{lead_count} leads scored and ranked from all qualified stages (ACQ - Qualified, Phase 2, Phase 3).
-
-Use this ranking to prioritize your calls today. Higher scores = stronger buy signals.
-
-Full analysis attached as {filename}"""
-
-    message.attach(MIMEText(body, 'plain'))
-
-    # Attach the report as a TXT file
-    attachment = MIMEBase('text', 'plain')
-    attachment.set_payload(report_text.encode('utf-8'))
-    encoders.encode_base64(attachment)
-    attachment.add_header('Content-Disposition', f'attachment; filename="{filename}"')
-    message.attach(attachment)
+    message = {
+        "blocks": [
+            {
+                "type": "header",
+                "text": {
+                    "type": "plain_text",
+                    "text": f"Daily Qualified Lead Triage - {today}",
+                    "emoji": True
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": f"*{lead_count} leads* analyzed and ranked from all qualified stages:\n• ACQ - Qualified\n• Qualified Phase 2\n• Qualified Phase 3"
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "Use this ranking to prioritize your calls today. Higher scores = stronger buy signals."
+                }
+            },
+            {
+                "type": "actions",
+                "elements": [
+                    {
+                        "type": "button",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "View Full Report",
+                            "emoji": True
+                        },
+                        "url": drive_link,
+                        "style": "primary"
+                    }
+                ]
+            }
+        ]
+    }
 
     try:
-        context = ssl.create_default_context()
-        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-            server.starttls(context=context)
-            server.login(EMAIL_FROM, EMAIL_PASSWORD)
-            server.sendmail(EMAIL_FROM, SLACK_CHANNEL_EMAIL, message.as_string())
-
-        print(f"  Sent report to Slack channel via email")
+        response = requests.post(
+            SLACK_WEBHOOK_URL,
+            json=message,
+            headers={'Content-Type': 'application/json'}
+        )
+        response.raise_for_status()
+        print(f"  Posted to Slack successfully")
         return True
 
     except Exception as e:
-        print(f"  [ERROR] Failed to send email: {e}")
+        print(f"  [ERROR] Slack post failed: {e}")
         return False
 
 
@@ -320,12 +375,22 @@ def main():
     report_path = save_report_locally(report_text)
     print(f"    Saved to: {report_path}")
 
-    # Step 5: Send to Slack via email
+    # Step 5: Upload to Google Drive
+    drive_link = None
     if dry_run:
-        print(f"\n[5] [DRY RUN] Skipping Slack delivery")
+        print(f"\n[5] [DRY RUN] Skipping Google Drive upload")
     else:
-        print(f"\n[5] Sending to Slack channel...")
-        send_to_slack_via_email(report_text, len(preprocessed_leads))
+        print(f"\n[5] Uploading to Google Drive...")
+        drive_link = upload_to_google_drive(report_path)
+
+    # Step 6: Post to Slack
+    if dry_run:
+        print(f"\n[6] [DRY RUN] Skipping Slack post")
+    elif drive_link:
+        print(f"\n[6] Posting to Slack...")
+        post_to_slack(len(preprocessed_leads), drive_link)
+    else:
+        print(f"\n[6] Skipping Slack post (no Drive link available)")
 
     # Summary
     print(f"\n" + "=" * 60)
@@ -333,6 +398,8 @@ def main():
     print("=" * 60)
     print(f"Leads analyzed: {len(preprocessed_leads)}")
     print(f"Report saved: {report_path}")
+    if drive_link:
+        print(f"Google Drive: {drive_link}")
     print("\n[DONE] Daily triage complete!")
 
     return 0
