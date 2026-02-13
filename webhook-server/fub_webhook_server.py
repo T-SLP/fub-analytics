@@ -24,12 +24,11 @@ app = Flask(__name__)
 
 def extract_lead_source_tag(tags):
     """
-    Extract lead source tag from tags array
-    Returns 'ReadyMode', 'Roor', 'Smarter Contact', or None
-    Database keeps granular tags; dashboard groups Roor and Smarter Contact as "Text Lead"
+    Extract lead source tag from tags array.
+    Only two lead sources: ReadyMode (cold calls) and Text Lead (everything else).
     """
     if not tags or not isinstance(tags, list):
-        return None
+        return "Text Lead"
 
     # Convert all tags to lowercase for case-insensitive matching
     tags_lower = [tag.lower() if isinstance(tag, str) else str(tag).lower() for tag in tags]
@@ -39,17 +38,8 @@ def extract_lead_source_tag(tags):
         if 'readymode' in tag or 'ready mode' in tag or 'ready-mode' in tag:
             return "ReadyMode"
 
-    # Check for Roor variations - keep as "Roor" in database
-    for tag in tags_lower:
-        if 'roor' in tag:
-            return "Roor"
-
-    # Check for Smarter Contact variations - keep as "Smarter Contact" in database
-    for tag in tags_lower:
-        if 'smarter contact' in tag or 'smartercontact' in tag or 'smarter-contact' in tag:
-            return "Smarter Contact"
-
-    return None
+    # Everything else is a text campaign lead
+    return "Text Lead"
 
 class WebhookProcessor:
     """Enhanced webhook processor with race condition protection and lead source extraction"""
