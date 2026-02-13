@@ -8,7 +8,9 @@ export const getWeekStart = (date) => {
   const d = new Date(date);
   const day = d.getDay(); // 0=Sunday, 1=Monday, ...
   const diff = d.getDate() - ((day + 6) % 7);
-  return new Date(d.setDate(diff));
+  d.setDate(diff);
+  d.setHours(0, 0, 0, 0);
+  return d;
 };
 
 // Helper function to get date range
@@ -37,6 +39,7 @@ export const getDateRange = (timeRangeType = 'main', timeRange, customStart = ''
     case 'last_week':
       const lastWeekEnd = new Date(getWeekStart(end));
       lastWeekEnd.setDate(lastWeekEnd.getDate() - 1);
+      lastWeekEnd.setHours(23, 59, 59, 999);
       const lastWeekStart = getWeekStart(lastWeekEnd);
       return { start: lastWeekStart, end: lastWeekEnd };
     case '30d':
