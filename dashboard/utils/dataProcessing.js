@@ -936,21 +936,9 @@ export const processSupabaseData = (stageChanges, startDate, endDate, businessDa
     })
     .slice(0, 100)
     .map(change => {
-      // Determine lead source with fallback for NULL values
+      // Only two lead sources: ReadyMode (cold calls) and text campaigns (everything else)
       let leadSource = change.lead_source_tag;
-
-      // Fallback for NULL lead sources - likely Smarter Contact
-      if (!leadSource || leadSource === 'null') {
-        const campaignId = change.campaign_id || '';
-        if (campaignId.includes('GA') || campaignId.includes('NC')) {
-          leadSource = 'Smarter Contact';
-        } else {
-          leadSource = 'Unknown';
-        }
-      }
-
-      // Group Roor and Smarter Contact as "Text Lead" for display
-      if (leadSource === 'Roor' || leadSource === 'Smarter Contact') {
+      if (leadSource !== 'ReadyMode') {
         leadSource = 'Text Lead';
       }
 
@@ -1041,27 +1029,10 @@ export const processSupabaseData = (stageChanges, startDate, endDate, businessDa
     if (change.stage_to === 'ACQ - Qualified') {
       let source = change.lead_source_tag;
 
-      // Fallback classification using campaign codes for NULL lead_source_tag
-      if (!source || source === 'null') {
-        const campaignId = change.campaign_id || '';
-        console.log(`🔍 NULL FALLBACK: ${change.first_name} ${change.last_name} - campaign_id: "${campaignId}"`);
-
-        // Classify based on campaign patterns - these are likely Smarter Contact leads
-        if (campaignId.includes('GA') || campaignId.includes('NC')) {
-          source = 'Smarter Contact';
-          console.log(`✅ FALLBACK CLASSIFICATION: ${change.first_name} ${change.last_name} -> Smarter Contact (campaign: ${campaignId})`);
-        } else {
-          source = 'Unknown';
-          console.log(`⚠️ STILL UNKNOWN: ${change.first_name} ${change.last_name} - campaign: "${campaignId}"`);
-        }
-      }
-
-      // Group Roor and Smarter Contact together as "Text Lead" for display
-      if (source === 'Roor' || source === 'Smarter Contact') {
+      // Only two lead sources: ReadyMode (cold calls) and text campaigns (everything else)
+      if (source !== 'ReadyMode') {
         source = 'Text Lead';
       }
-
-      console.log(`🔍 LEAD SOURCE DEBUG: ${change.first_name} ${change.last_name} - lead_source_tag: "${change.lead_source_tag}" -> using: "${source}"`);
       leadSourceCounts[source] = (leadSourceCounts[source] || 0) + 1;
     }
   });
