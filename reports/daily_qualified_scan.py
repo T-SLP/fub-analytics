@@ -58,7 +58,8 @@ GOOGLE_DRIVE_FOLDER_ID = os.getenv("GOOGLE_DRIVE_FOLDER_ID")
 
 # LLM Configuration
 LLM_MODEL = "claude-opus-4-6"
-MAX_TOKENS = 16000  # Allow for detailed response with many leads
+MAX_TOKENS = 32000  # Total budget for thinking + visible output
+THINKING_BUDGET = 16000  # Extended thinking budget for internal scoring/ranking
 
 # Qualified stages to scan
 QUALIFIED_STAGES = [
@@ -66,6 +67,13 @@ QUALIFIED_STAGES = [
     'Qualified Phase 2 - Day 3 to 2 Weeks',
     'Qualified Phase 3 - 2 Weeks to 4 Weeks',
 ]
+
+# Stage abbreviations for report output (locked by Python, not LLM-interpreted)
+STAGE_ABBREVIATIONS = {
+    'ACQ - Qualified': 'ACQ-Q',
+    'Qualified Phase 2 - Day 3 to 2 Weeks': 'Ph2',
+    'Qualified Phase 3 - 2 Weeks to 4 Weeks': 'Ph3',
+}
 
 # Prompt file path
 PROMPT_FILE = Path(__file__).resolve().parent.parent / 'prompts' / 'daily_qualified_prompt.txt'
@@ -118,6 +126,9 @@ def fetch_and_preprocess_leads(fetcher: LeadDataFetcher, leads: List[Dict]) -> L
             bundle = fetcher.fetch_lead(person_id, verbose=False)
             if bundle:
                 processed = preprocess_bundle(bundle)
+                # Inject stage abbreviation from Python (not LLM-interpreted)
+                actual_stage = processed.get('lead_info', {}).get('stage', '')
+                processed.setdefault('lead_info', {})['stage_abbrev'] = STAGE_ABBREVIATIONS.get(actual_stage, actual_stage)
                 preprocessed.append(processed)
         except Exception as e:
             print(f"      Error: {e}")
@@ -143,6 +154,10 @@ Please analyze and rank these leads according to your scoring system."""
         response = client.messages.create(
             model=LLM_MODEL,
             max_tokens=MAX_TOKENS,
+            thinking={
+                "type": "enabled",
+                "budget_tokens": THINKING_BUDGET
+            },
             system=[
                 {
                     "type": "text",
@@ -155,7 +170,12 @@ Please analyze and rank these leads according to your scoring system."""
             ]
         )
 
-        response_text = response.content[0].text
+        # Extract visible text from response (skip thinking blocks)
+        response_text = ""
+        for block in response.content:
+            if block.type == "text":
+                response_text += block.text
+
         print(f"  Received response ({len(response_text)} chars)")
         return response_text
 
