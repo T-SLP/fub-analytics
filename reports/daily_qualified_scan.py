@@ -152,7 +152,6 @@ Please analyze and rank these leads according to your scoring system."""
 
     try:
         # Use streaming to avoid 10-minute timeout on long-running requests
-        response_text = ""
         with client.messages.stream(
             model=LLM_MODEL,
             max_tokens=MAX_TOKENS,
@@ -171,12 +170,13 @@ Please analyze and rank these leads according to your scoring system."""
                 {"role": "user", "content": user_message}
             ]
         ) as stream:
-            for event in stream:
-                # Collect only visible text events (skip thinking)
-                if event.type == "content_block_start" and hasattr(event.content_block, 'text'):
-                    response_text += event.content_block.text
-                elif event.type == "content_block_delta" and hasattr(event.delta, 'text'):
-                    response_text += event.delta.text
+            response = stream.get_final_message()
+
+        # Extract visible text from response (skip thinking blocks)
+        response_text = ""
+        for block in response.content:
+            if block.type == "text":
+                response_text += block.text
 
         print(f"  Received response ({len(response_text)} chars)")
         return response_text
