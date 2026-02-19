@@ -58,8 +58,8 @@ GOOGLE_DRIVE_FOLDER_ID = os.getenv("GOOGLE_DRIVE_FOLDER_ID")
 
 # LLM Configuration
 LLM_MODEL = "claude-opus-4-6"
-MAX_TOKENS = 64000  # Total budget for thinking + visible output
-THINKING_BUDGET = 32000  # Extended thinking budget for internal scoring/ranking
+MAX_TOKENS = 128000  # Total budget for thinking + visible output (41 leads used ~52k, headroom for 60+)
+THINKING_BUDGET = 60000  # Extended thinking budget for internal scoring/ranking
 
 # Qualified stages to scan
 QUALIFIED_STAGES = [
@@ -136,6 +136,36 @@ def fetch_and_preprocess_leads(fetcher: LeadDataFetcher, leads: List[Dict]) -> L
     return preprocessed
 
 
+def clean_churning_artifacts(text: str) -> str:
+    """
+    Remove churning artifacts from LLM output.
+
+    The model sometimes restarts its analysis mid-output, producing multiple
+    copies of the report. This keeps only the last complete report by finding
+    the final occurrence of the report header and discarding everything before it.
+    """
+    REPORT_HEADER = "============================================\nDAILY QUALIFIED LEAD TRIAGE"
+
+    # Find all occurrences of the report header
+    positions = []
+    start = 0
+    while True:
+        pos = text.find(REPORT_HEADER, start)
+        if pos == -1:
+            break
+        positions.append(pos)
+        start = pos + 1
+
+    if len(positions) <= 1:
+        # No churning detected (0 or 1 occurrence)
+        return text
+
+    # Keep from the last header onward
+    cleaned = text[positions[-1]:]
+    print(f"  Cleaned churning artifacts: removed {len(positions) - 1} false start(s), kept final report")
+    return cleaned
+
+
 def analyze_batch_with_llm(leads: List[Dict[str, Any]], client: Any) -> str:
     """Send all leads to Claude in a single batch for ranking"""
 
@@ -172,19 +202,29 @@ Please analyze and rank these leads according to your scoring system."""
         ) as stream:
             response = stream.get_final_message()
 
-        # Log response details for debugging
-        print(f"  Response stop_reason: {response.stop_reason}")
-        print(f"  Response content blocks: {len(response.content)}")
-        for i, block in enumerate(response.content):
-            print(f"    Block {i}: type={block.type}, length={len(block.text) if hasattr(block, 'text') else 'N/A'}")
-
         # Extract visible text from response (skip thinking blocks)
         response_text = ""
         for block in response.content:
             if block.type == "text":
                 response_text += block.text
 
+        # Log token usage
+        input_tokens = 0
+        output_tokens = 0
+        if hasattr(response, 'usage'):
+            u = response.usage
+            input_tokens = getattr(u, 'input_tokens', 0)
+            output_tokens = getattr(u, 'output_tokens', 0)
+            print(f"  Token usage: {input_tokens} input, {output_tokens} output")
+
         print(f"  Received response ({len(response_text)} chars)")
+
+        # Clean up any churning artifacts (repeated restarts)
+        response_text = clean_churning_artifacts(response_text)
+
+        # Append token usage footer to report
+        response_text += f"\n\n---\nToken usage: {input_tokens:,} input / {output_tokens:,} output | Model: {LLM_MODEL}"
+
         return response_text
 
     except Exception as e:
