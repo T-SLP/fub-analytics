@@ -58,8 +58,8 @@ GOOGLE_DRIVE_FOLDER_ID = os.getenv("GOOGLE_DRIVE_FOLDER_ID")
 
 # LLM Configuration
 LLM_MODEL = "claude-opus-4-6"
-MAX_TOKENS = 32000  # Total budget for thinking + visible output
-THINKING_BUDGET = 16000  # Extended thinking budget for internal scoring/ranking
+MAX_TOKENS = 64000  # Total budget for thinking + visible output
+THINKING_BUDGET = 32000  # Extended thinking budget for internal scoring/ranking
 
 # Qualified stages to scan
 QUALIFIED_STAGES = [
@@ -171,6 +171,12 @@ Please analyze and rank these leads according to your scoring system."""
             ]
         ) as stream:
             response = stream.get_final_message()
+
+        # Log response details for debugging
+        print(f"  Response stop_reason: {response.stop_reason}")
+        print(f"  Response content blocks: {len(response.content)}")
+        for i, block in enumerate(response.content):
+            print(f"    Block {i}: type={block.type}, length={len(block.text) if hasattr(block, 'text') else 'N/A'}")
 
         # Extract visible text from response (skip thinking blocks)
         response_text = ""
